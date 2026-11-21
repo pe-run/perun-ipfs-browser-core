@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-16T22:56:16.304Z",
+  "results": [
+    {
+      "url": "https://duckduckgo.com/",
+      "status": 200,
+      "finalURL": "https://duckduckgo.com/"
+    },
+    {
+      "url": "https://www.reuters.com/",
+      "status": 401,
+      "finalURL": "https://www.reuters.com/"
+    },
+    {
+      "url": "https://www.yahoo.com/",
+      "status": 200,
+      "finalURL": "https://www.yahoo.com/"
+    },
+    {
+      "url": "https://www.youtube.com/",
+      "status": 200,
+      "finalURL": "https://www.youtube.com/"
+    },
+    {
+      "url": "https://www.imdb.com/",
+      "status": 202,
+      "finalURL": "https://www.imdb.com/"
+    },
+    {
+      "url": "https://coinmarketcap.com/",
+      "status": 200,
+      "finalURL": "https://coinmarketcap.com/"
+    },
+    {
+      "url": "https://open.spotify.com/",
+      "status": 200,
+      "finalURL": "https://open.spotify.com/"
+    },
+    {
+      "url": "https://github.com/",
+      "status": 200,
+      "finalURL": "https://github.com/"
+    },
+    {
+      "url": "ipfs://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/wiki/",
+      "method": "UnixFS files stat through the isolated online P2P audit node",
+      "available": true,
+      "type": "directory",
+      "scope": "Directory metadata retrieved, not the complete Wikipedia archive."
+    }
+  ],
+  "method": "HTTPS GET with normal TLS verification; response body cancelled after headers. HTTP 401/202 indicate access protection/challenge, not a missing site; retained without claiming successful page rendering."
+}

@@ -1,0 +1,809 @@
+{
+  "date": "2026-11-16T22:57:52.903Z",
+  "method": "Isolated online Kubo: UnixFS stat plus 1 KiB content sample or directory listing; 25s per RPC, two attempts for failures; no HTTP gateways. Availability at check time, not a promise of future availability or full site compatibility.",
+  "peers": 26,
+  "results": [
+    {
+      "url": "ipns://browsers.today",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"browsers.today.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://libp2p.io",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"libp2p.io.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5djngcb5ju72w6n8c6wuohqww4w0k0s6ye3ac99n6ae0wuulfckn/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dk0wv5km4x0ujik8esuaen0tier3o7fv9t1ytdb6ben8tlkox71/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkwo6nilhogoc41cwo4ggew27p0claa6pzfgwi5o738xbma4x8g/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dh1l88mm31k9tqpoxk77v9cku48q89z3ftztfxdugb04lqo8y7k/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dl1gsf4yizlmlnypjpxmv45hjs4yo8dnyxclceq0hbd6z20yrn6/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dicruj8whyde1z5vtm2tg6q1gey17nb2trkuh4b0m69sl6z85cw/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dgnlaetz4rep2xzu9arhfux41ibgyms2u4zteud1cchjuboo87g/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkx82emt5ze4xnu8vfkednz1jr5er9wrdl15yh60vb5ida49pbb/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5djxbrm2kkndcscgtg9nktb5duxqisp69knqu1wi2djjvol33o3o/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkz4g101qqpgy6bj61q3o31v7tk7gnwruj2imys4r1ywsney436/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5di8adaqow5xoowt7rczuctcntk7xastmgdrrowb44dp5rf9j0wt/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dj1xepds03eeaywh8j0nty3oe361rtz2w18k4t9gkf6h27ydtxh/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://sciop.net/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"sciop.net.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://archivo-pirata-antifascista.partidopirata.com.ar/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"archivo-pirata-antifascista.partidopirata.com.ar.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://brantly.eth",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"brantly.eth.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://biblioguias.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dgd5f01xk44xa76ijyo61n5l6ji59poppowmncgazvmq7dlw6vs/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dlzyg62oq91zg4blw1033xri9an7kh1vdyofw6xupsfinq04i2z/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dg7v8ecmmctz1d5qezx5o8bil2ky4y3iodblsog0qptsp9ngtc3/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dlq7xoksrlo4ts18mk8hb0dbh869c4eo93fww7h4nvtkeupau9n/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://eaglercraft.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dg9p212ngoqpmayhhewp57jj5telumin0bc4cd42w2yoor5mvjc/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5di65ztqhl4jwp4uu2zvgsgn58o290k608d4175cmhl8lkocqdhw/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dm3fiiuk6h843uk50j3s3iert35boyclvj30tjfyi04e0drmqk1/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dg8qyzwuu4et8zc6aeja7ddrd14zmnz6wct1c3u58rjvmgu5b0i/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dgtk5uyo6yl3b583ljhvx6l6idir13hjhnxjlu8vtu9ohxwv4lz/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5diwwgnlxh1u9ktwjzhkqmktq6zghd4fxjitfk6i4bg7igekawku/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dhr2tkch6a9wz7kd24e0b5kxhudvrztxfvf9dlm2xnstmzbd20x/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkt322f5wji19bprr9vdvo6ob5xq5wn2tajvz9wmq76dop5pbk0/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dhfp3ftk1qll6tbcvtviru3lw8bdh05k60iypk3lyzlx6675by5/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dklx8mi0z51yokwewfeq92y2dnnczu86q6q753oa1bnmz0ew34z/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://manasiwibi.com/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"manasiwibi.com.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkhjpjanm71tkvxggyoedsqogqo4ev41w8p4etrzume8zzt4oyr/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://sorby.xyz/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"sorby.xyz.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://sunilshrestha.com/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"sunilshrestha.com.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5djteufrelfxdxc9rh6d1a3ps1fr3o3ds4vwr9sf0xzto8oakawc/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://taratsa.id/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://vincentcharlebois.com/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: DNSLink lookup for \"vincentcharlebois.com.\" failed: could not resolve name: DNSLink lookup could not find a TXT record (https://docs.ipfs.tech/concepts/dnslink/)"
+    },
+    {
+      "url": "ipns://chipilin.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkyebpkw5k4kkecddn0bnd9zch18g9bpb4htoulp439uyb4gugc/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5diuz448ecpx8bsh6m6lzag8y2anb704rpu1bu468abz7hmnxyp3/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5diwp5t2byodoxy6m0v5usedqg5vjdrrndqqkegxdn3jyqpdgxkv/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dix70mb6j8odhzyktg2r5zqo9723udaxrxu260bfiq6msyx048m/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dki8nou2gkoyp2ri8kdfrdvrh5u90zub4414oj3hp2m6yb9dj32/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dhhrryrnbzkimvrs2cvv5qep0tu49qiek72atdzd6tsnalyl1a9/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://chapien.net/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://mylesb.ca/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://espejogato.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dlkp97gklqu2dx0gey0mxfrb49aqx3ineaemwwjti0mhaeywpwf/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dgiytpjzjhjvolw999gr5njykz3o58cmjcsqqmvbctdcjeoudqx/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5di8kioe6v6tr1vbsz8m7l9v2muiqz5uam8r5ziqs93n60njgapv/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkpwtogks3wouxyhuerj8ajpgbbxyehoj7dux39n0b8kck3oow4/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dlmj8c05a6xk0g0n09x2m3a76lq3ahemgwtsr8s0r4lax9f5yvp/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://yantradyes.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5di21xyw26r6u2k3aq6mmwf8hgtm5j6bb7dicgi8llozi85m371j/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dk0y492hq9pg8t6cvv99b0bh1dmaeovl6qwtoeff4ex6327z90g/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://www.clearviewcopout.org/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dk5orb2vcvgxgpfrh695xrl96q3gpolt9badh1ns8a7qqee5pjv/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://www.keepkhan.com/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://radiofmlati2.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://take-action-stop-pharmacies-sharing-your-data.fftf.io/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://radiosanjavier941.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://soundpojectradio.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dkd1lhb3lg30xztrc97q3iwy2g2vy1mp6y8ng1d6piigarjyjjz/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dipa4u1p23edsv8jub2pl4zm635hapt52po19o0fplsvlv0g0bf/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dgmxhjlkpa72lty9y6splw0zzxqkt7w9w5s2oypovz5f7eqawlz/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://www.stopcopaganda.org/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5dlcg1b4blmevb6d12nmpi8z5r49ix0gotnmmxuvgasfif6i2l6m/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipns://k51qzi5uqu5diq6ds8amf7hpimiynnh66nkntebxfoby6gc388eh6fjqcwhqd1/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: could not resolve name"
+    },
+    {
+      "url": "ipfs://bafybeibiqlrnmws6psog7rl5ofeci3ontraitllw6wyyswnhxbwdkmw4ka",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeicjnhgtdudc34pin7gzrno2nt7jmxkpyhqbqrtyez6gs5kevgygjm/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeiaieqdmhtnehaau7kqoj2lmdfqc7juk34cjyb7dxr35vahp22bquu/24-uncensorable-wikipedia/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://QmRNUauWDvZFkAp1Bw3kAode3jT8aH2vx7LYzbS7H6R3Mg/view.html",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeih4a6ylafdki6ailjrdvmr7o4fbbeceeeuty4v3qyyouiz5koqlpi",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeicpnshmz7lhp5vcowscty4v4br33cjv22nhhqestavb2mww6zbswm",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://en.wikipedia-on-ipfs.org",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeifjbs4i7fhmpfbimfxujyz3hp4hgsyhypgnzkfmoidvaalkjovof4",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://ipfs.io",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://docs.ipfs.tech",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq/wiki/Vincent_van_Gogh.html",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Tokyo_National_Museum.html",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeifhgtpm6kmbyqszbardceszvkv5rsi3dodtuufpcfskzggekcfl2y",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeicid4dvqr5uy4mrduzciq2ui6a3ameqmfadvyn7o5ywwdzwon7nvu",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX/wiki/Mars.html",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://stopcopaganda.compost.digital/",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://sombrasgato.sutty.nl/",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipns://tommi.space/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://lesbradigatis.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://taolicus.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://vevergarden.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://scott.ee/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://gggp.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeieuutdavvf55sh3jktq2dpi2hkle6dtmebe7uklod3ramihyf3xa4",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://laloica.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipns://desarquivo.org/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded",
+      "type": "directory"
+    },
+    {
+      "url": "ipfs://QmccqhJg5wm5kNjAP4k4HrYxoqaXUGNuotDUqfvYBx8jrR/qr",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmVc6zuAneKJzicnJpfrqCH9gSy6bz54JhcypfJYhGUFQu/play",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmSrCRJmzE4zE1nAfWPbzVfanKQNBhp7ZWmMnEdbiLvYNh/mdown",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmNhFJjGcMPqpuYfxL62VVB9528NXqDNMFXiqN5bgFYiZ1/its-time-for-the-permanent-web.html",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeibrdb5tuqk4lj5yuqa7cvd57uxf3xtgujfd2g5j4ugmsscqx7pgja",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipfs://bafybeic6cdwczr4f33lwyyax4rtz6hl7zgyoyu65iiitmkt3qkcpvzghyy",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipfs://bafybeicf4ymaboepjhwc2b2f3ufd33ak6vxsjz7iefylr6z6ncl6eflpeq",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeicn7i3soqdgr7dwnrwytgq4zxy7a5jpkizrvhm5mv6bgjd32wm3q4/welcome-to-IPFS.jpg",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeiedldlwf7b5v622jdijqy7vpawwmxokf75iqwyjpfeh4kfr35m3re",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipfs://bafybeib66xujztkiq7lqbupfz6arzhlncwagva35dx54nj7ipyoqpyozhy",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmNksJqvwHzNtAtYZVqFZFfdCVciY4ojTU2oFZQSFG9U7B/index.html",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://emisoraemecu.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://QmdmQXB2mzChmMeKY47C43LxUdg1NDJ5MWcKMKxDu7RgQm",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipfs://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/wiki/Elephant",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmSnuWmxptJZdLJpKRarxBMS2Ju2oANVrgbr2xWbie9b2D",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "directory-listing"
+    },
+    {
+      "url": "ipfs://bafybeiezqkklnjkqywshh4lg65xblaz2scbbdgzip4vkbrc4gn37horokq",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/wiki/Albert_Einstein",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "file",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://radioluzfm1039.sutty.nl/",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    },
+    {
+      "url": "ipfs://bafybeiazgazbrj6qprr4y5hx277u4g2r5nzgo3jnxkhqx56doxdqrzms6y",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://dwebcamp.org/",
+      "available": true,
+      "attempts": 1,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipns://elbondicolectivo.sutty.nl/",
+      "available": true,
+      "attempts": 2,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://QmWPgJnUGLB1LPh9KMG9LEN4LVu5e17TwkEtcmTWdNn9V6/",
+      "available": true,
+      "attempts": 2,
+      "error": "",
+      "type": "directory",
+      "content": "sample"
+    },
+    {
+      "url": "ipfs://bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/wiki/Block_of_Wikipedia_in_Turkey",
+      "available": false,
+      "attempts": 2,
+      "error": "Error: context deadline exceeded"
+    }
+  ],
+  "completedAt": "2026-11-16T22:59:39.089Z"
+}

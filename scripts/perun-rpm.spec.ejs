@@ -1,0 +1,27 @@
+%global __os_install_post %{nil}
+%define _binary_payload w<%= compressionLevel %>.xzdio
+
+Name: <%= name %>
+Version: <%= version %>
+Release: <%= revision %>%{?dist}
+Summary: <%= description %>
+License: <%= license %>
+URL: <%= homepage %>
+Requires: <%= requires.join(', ') %>
+AutoReqProv: no
+
+%description
+<%= productDescription || description %>
+
+%install
+mkdir -p "%{buildroot}/usr"
+cp -a "%{_topdir}/BUILD/usr/." "%{buildroot}/usr/"
+
+%files
+%defattr(-,root,root,-)
+/usr/bin/<%= name %>
+/usr/lib/<%= name %>/
+%attr(4755,root,root) /usr/lib/<%= name %>/chrome-sandbox
+/usr/share/applications/<%= name %>.desktop
+/usr/share/doc/<%= name %>/
+/usr/share/pixmaps/<%= name %>.png

@@ -1,0 +1,77 @@
+{
+  "name": "ipfs-browser",
+  "productName": "Perun IPFS Browser",
+  "version": "0.17.10",
+  "private": true,
+  "description": "Linux browser with an embedded Kubo node",
+  "keywords": [],
+  "license": "MIT",
+  "author": {
+    "name": "Perun IPFS Browser contributors"
+  },
+  "main": ".vite/build/main.cjs",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "lint": "oxlint && oxfmt --check",
+    "lint:fix": "oxlint --fix && oxfmt --write",
+    "typecheck": "tsc --noEmit",
+    "kubo:download": "node scripts/download-kubo.mjs",
+    "test": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration --testTimeout=90000",
+    "test:e2e": "playwright test",
+    "build": "npm run package",
+    "prepackage": "npm run kubo:download",
+    "premake": "npm run kubo:download",
+    "catalog:audit": "node scripts/audit-catalog.mjs",
+    "make:source": "node scripts/release-artifacts.mts"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/maker-base": "^8.0.1",
+    "@electron-forge/maker-deb": "^8.0.1",
+    "@electron-forge/maker-rpm": "^8.0.1",
+    "@electron-forge/maker-zip": "^8.0.1",
+    "@electron-forge/plugin-fuses": "^8.0.1",
+    "@electron-forge/plugin-vite": "^8.0.1",
+    "@electron/fuses": "^2.1.3",
+    "@playwright/test": "^1.65.1",
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^24.19.2",
+    "electron": "45.3.3",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "file-type": "^22.3.0",
+    "mime-types": "^3.0.2",
+    "multiformats": "^14.0.5"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "files": [
+    ".nvmrc",
+    ".oxfmtrc.json",
+    ".oxlintrc.json",
+    "ARCHITECTURE.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "ROADMAP.md",
+    "SECURITY.md",
+    "*.mts",
+    "playwright.config.ts",
+    "tsconfig.json",
+    "index.html",
+    "docs/",
+    "scripts/",
+    "src/",
+    "tests/",
+    "resources/branding/",
+    "resources/kubo/LICENSE*"
+  ]
+}

@@ -1,0 +1,989 @@
+[
+  {
+    "category": "documentation",
+    "url": "ipns://k51qzi5uqu5dicruj8whyde1z5vtm2tg6q1gey17nb2trkuh4b0m69sl6z85cw/",
+    "title": "Distributed Press Documentation",
+    "descriptions": {
+      "en": "Distributed Press documentation: publishing and integrations",
+      "pl": "Dokumentacja Distributed Press: publikowanie i integracje"
+    },
+    "status": "manifest",
+    "domain": "docs.distributed.press"
+  },
+  {
+    "category": "documentation",
+    "url": "ipns://k51qzi5uqu5djngcb5ju72w6n8c6wuohqww4w0k0s6ye3ac99n6ae0wuulfckn/",
+    "title": "Hypha Handbook",
+    "descriptions": {
+      "en": "Hypha Handbook — the organization's open internal handbook",
+      "pl": "Hypha Handbook — wewnętrzny otwarty podręcznik organizacji"
+    },
+    "status": "manifest",
+    "domain": "handbook.hypha.coop"
+  },
+  {
+    "category": "documentation",
+    "url": "ipns://k51qzi5uqu5dkz4g101qqpgy6bj61q3o31v7tk7gnwruj2imys4r1ywsney436/",
+    "title": "Sutty Documentation",
+    "descriptions": {
+      "en": "Sutty documentation — tools for building websites",
+      "pl": "Dokumentacja Sutty — narzędzia do tworzenia witryn"
+    },
+    "status": "manifest",
+    "domain": "docs.sutty.nl"
+  },
+  {
+    "category": "documentation",
+    "url": "ipns://k51qzi5uqu5dk0wv5km4x0ujik8esuaen0tier3o7fv9t1ytdb6ben8tlkox71/",
+    "title": "Sutty Minima Tutorial",
+    "descriptions": {
+      "en": "Sutty Minima Tutorial — a guide to creating your own website",
+      "pl": "Sutty Minima Tutorial — instrukcja stworzenia własnej strony"
+    },
+    "status": "manifest",
+    "domain": "tutorial-sutty-minima.sutty.nl"
+  },
+  {
+    "category": "documentation",
+    "url": "ipns://k51qzi5uqu5dkx82emt5ze4xnu8vfkednz1jr5er9wrdl15yh60vb5ida49pbb/",
+    "title": "Sutty Minima Example",
+    "descriptions": {
+      "en": "Sutty — an example tutorial for the Minima template",
+      "pl": "Sutty — przykładowy tutorial szablonu Minima"
+    },
+    "status": "manifest",
+    "domain": "tutorial.sutty.nl"
+  },
+  {
+    "category": "documentation",
+    "url": "ipns://docs.ipfs.tech",
+    "title": "IPFS Documentation",
+    "descriptions": {
+      "en": "Official IPFS documentation: publishing, IPNS, DNSLink and gateways",
+      "pl": "Oficjalna dokumentacja IPFS, w tym publikowanie, IPNS, DNSLink, działanie gatewayów"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "documentation",
+    "url": "ipns://libp2p.io",
+    "title": "libp2p",
+    "descriptions": {
+      "en": "Documentation and information about libp2p, the P2P networking foundation",
+      "pl": "Dokumentacja i informacje o protokole libp2p, fundament sieci P2P"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "browsers",
+    "url": "ipns://k51qzi5uqu5djxbrm2kkndcscgtg9nktb5duxqisp69knqu1wi2djjvol33o3o/",
+    "title": "Agregore",
+    "descriptions": {
+      "en": "Agregore — a browser and experiments with P2P protocols",
+      "pl": "Agregore — przeglądarka i eksperymenty z protokołami P2P"
+    },
+    "status": "manifest",
+    "domain": "agregore.mauve.moe"
+  },
+  {
+    "category": "browsers",
+    "url": "ipns://k51qzi5uqu5di8adaqow5xoowt7rczuctcntk7xastmgdrrowb44dp5rf9j0wt/",
+    "title": "Peersky",
+    "descriptions": {
+      "en": "Peersky — a decentralized web browser project",
+      "pl": "Peersky — projekt przeglądarki zdecentralizowanego internetu"
+    },
+    "status": "manifest",
+    "domain": "peersky.p2plabs.xyz"
+  },
+  {
+    "category": "browsers",
+    "url": "ipns://browsers.today",
+    "title": "Browsers Today",
+    "descriptions": {
+      "en": "Browsers Today — used for Brave's native IPNS tests; freshness uncertain",
+      "pl": "Browsers Today — używane do testów natywnej obsługi IPNS w Brave, aktualność niepewna"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "directories",
+    "url": "ipns://k51qzi5uqu5dj1xepds03eeaywh8j0nty3oe361rtz2w18k4t9gkf6h27ydtxh/",
+    "title": "Distributed Press Site Index",
+    "descriptions": {
+      "en": "Distributed Press Site Index — a directory of sites published through IPFS",
+      "pl": "Distributed Press Site Index — katalog witryn publikowanych przez IPFS"
+    },
+    "status": "manifest",
+    "domain": "explore.distributed.press"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipns://k51qzi5uqu5dl1gsf4yizlmlnypjpxmv45hjs4yo8dnyxclceq0hbd6z20yrn6/",
+    "title": "IPFS Wikipedia Search",
+    "descriptions": {
+      "en": "IPFS Wikipedia Search — search for Wikipedia copies on IPFS",
+      "pl": "IPFS Wikipedia Search — wyszukiwarka treści kopii Wikipedii w IPFS"
+    },
+    "status": "manifest",
+    "domain": "wiki.p2plabs.xyz"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipns://k51qzi5uqu5dkwo6nilhogoc41cwo4ggew27p0claa6pzfgwi5o738xbma4x8g/",
+    "title": "Commons Transition Primer",
+    "descriptions": {
+      "en": "Commons Transition Primer — an introduction to the commons economy",
+      "pl": "Commons Transition Primer — opracowanie o gospodarce dóbr wspólnych"
+    },
+    "status": "manifest",
+    "domain": "primer.commonstransition.org"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipns://k51qzi5uqu5dh1l88mm31k9tqpoxk77v9cku48q89z3ftztfxdugb04lqo8y7k/",
+    "title": "Academia Jaquer",
+    "descriptions": {
+      "en": "Academia Jaquer — questions, knowledge and alternative ways of learning",
+      "pl": "Academia Jaquer — pytania, wiedza i alternatywne metody uczenia"
+    },
+    "status": "manifest",
+    "domain": "jaqueandolaacademia.sutty.nl"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipns://biblioguias.sutty.nl/",
+    "title": "Biblioguias SB-UNPAZ",
+    "descriptions": {
+      "en": "Biblioguias SB-UNPAZ — subject guides from a library",
+      "pl": "Biblioguias SB-UNPAZ — biblioteczne przewodniki tematyczne"
+    },
+    "status": "index"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipns://en.wikipedia-on-ipfs.org",
+    "title": "Wikipedia EN archive domain",
+    "descriptions": {
+      "en": "Domain of archived English Wikipedia on IPFS; may no longer point to an active copy",
+      "pl": "Domena archiwalnej Wikipedii EN w IPFS; może już nie wskazywać aktywnej kopii"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipfs://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq/wiki/Vincent_van_Gogh.html",
+    "title": "Wikipedia — Vincent van Gogh",
+    "descriptions": {
+      "en": "Wikipedia: Vincent van Gogh — a static page from a historical copy",
+      "pl": "Wikipedia: Vincent van Gogh — statyczna podstrona historycznej kopii"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipfs://QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Tokyo_National_Museum.html",
+    "title": "Wikipedia — Tokyo National Museum",
+    "descriptions": {
+      "en": "Wikipedia: Tokyo National Museum — a page from an older archive",
+      "pl": "Wikipedia: Tokyo National Museum — podstrona starszego archiwum"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "knowledge",
+    "url": "ipfs://QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX/wiki/Mars.html",
+    "title": "Wikipedia — Mars",
+    "descriptions": {
+      "en": "Wikipedia: Mars — a sample page from IPFS documentation",
+      "pl": "Wikipedia: Mars — przykładowa podstrona z dokumentacji IPFS"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "technology",
+    "url": "ipns://k51qzi5uqu5dgnlaetz4rep2xzu9arhfux41ibgyms2u4zteud1cchjuboo87g/",
+    "title": "P2P Labs",
+    "descriptions": {
+      "en": "P2P Labs — peer-to-peer networking projects and infrastructure",
+      "pl": "P2P Labs — projekty i infrastruktura sieci peer-to-peer"
+    },
+    "status": "manifest",
+    "domain": "p2plabs.xyz"
+  },
+  {
+    "category": "technology",
+    "url": "ipns://k51qzi5uqu5dgd5f01xk44xa76ijyo61n5l6ji59poppowmncgazvmq7dlw6vs/",
+    "title": "ITRestauracion",
+    "descriptions": {
+      "en": "ITRestauracion — material about Kubernetes and IT infrastructure",
+      "pl": "ITRestauracion — materiały o Kubernetes i infrastrukturze IT"
+    },
+    "status": "manifest",
+    "domain": "itrestauracion.sutty.nl"
+  },
+  {
+    "category": "technology",
+    "url": "ipns://k51qzi5uqu5dlzyg62oq91zg4blw1033xri9an7kh1vdyofw6xupsfinq04i2z/",
+    "title": "Nodo dWeb Sudaka",
+    "descriptions": {
+      "en": "Nodo dWeb Sudaka — a decentralized web initiative in Latin America",
+      "pl": "Nodo dWeb Sudaka — inicjatywa zdecentralizowanego internetu w Ameryce Łacińskiej"
+    },
+    "status": "manifest",
+    "domain": "dweb.sutty.nl"
+  },
+  {
+    "category": "technology",
+    "url": "ipns://ipfs.io",
+    "title": "IPFS DNSLink example",
+    "descriptions": {
+      "en": "IPFS — a documented DNSLink example; reachability needs checking",
+      "pl": "IPFS — dokumentacyjny przykład nazwy DNSLink, sprawdź osiągalność"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "technology",
+    "url": "ipns://brantly.eth",
+    "title": "Brantly.eth",
+    "descriptions": {
+      "en": "Brantly.eth — an example ENS-named site addressed through IPNS; freshness uncertain",
+      "pl": "Brantly.eth — przykład strony z nazwą ENS adresowaną przez IPNS, aktualność niepewna"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "technology",
+    "url": "ipfs://bafybeifhgtpm6kmbyqszbardceszvkv5rsi3dodtuufpcfskzggekcfl2y",
+    "title": "IPFS hosting example",
+    "descriptions": {
+      "en": "An example static site used in IPFS website-hosting documentation",
+      "pl": "Przykładowa statyczna strona używana w dokumentacji hostowania witryn na IPFS"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "applications",
+    "url": "ipns://k51qzi5uqu5dlq7xoksrlo4ts18mk8hb0dbh869c4eo93fww7h4nvtkeupau9n/",
+    "title": "Social Reader",
+    "descriptions": {
+      "en": "Social Reader — an experimental reader for social content",
+      "pl": "Social Reader — eksperymentalny czytnik treści społecznościowych"
+    },
+    "status": "manifest",
+    "domain": "reader.distributed.press"
+  },
+  {
+    "category": "defi",
+    "url": "ipfs://bafybeifjbs4i7fhmpfbimfxujyz3hp4hgsyhypgnzkfmoidvaalkjovof4",
+    "title": "Uniswap 5.167.0",
+    "descriptions": {
+      "en": "Uniswap — web application 5.167.0 dated 2026-10-21 (static UI snapshot)",
+      "pl": "Uniswap — wersja aplikacji webowej 5.167.0 z 21 października 2026 (statyczny snapshot UI)"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "defi",
+    "url": "ipfs://bafybeicid4dvqr5uy4mrduzciq2ui6a3ameqmfadvyn7o5ywwdzwon7nvu",
+    "title": "Uniswap 5.166.3",
+    "descriptions": {
+      "en": "Uniswap — an older 5.166.3 application snapshot; this address does not update",
+      "pl": "Uniswap — poprzedni snapshot aplikacji 5.166.3; nie jest to aktualizowany adres"
+    },
+    "status": "reference"
+  },
+  {
+    "category": "archives",
+    "url": "ipns://sciop.net/",
+    "title": "SciOp",
+    "descriptions": {
+      "en": "SciOp — preserving publicly available information",
+      "pl": "SciOp — przechowywanie publicznie dostępnych informacji"
+    },
+    "status": "index"
+  },
+  {
+    "category": "archives",
+    "url": "ipns://archivo-pirata-antifascista.partidopirata.com.ar/",
+    "title": "Archivo Pirata Antifascista",
+    "descriptions": {
+      "en": "Archivo Pirata Antifascista — preserving websites at risk of deletion",
+      "pl": "Archivo Pirata Antifascista — archiwum zachowujące zagrożone usunięciem strony"
+    },
+    "status": "index"
+  },
+  {
+    "category": "archives",
+    "url": "ipns://eaglercraft.sutty.nl/",
+    "title": "Eaglercraft",
+    "descriptions": {
+      "en": "Eaglercraft — an archive of a browser-game project",
+      "pl": "Eaglercraft — archiwum projektu gry przeglądarkowej"
+    },
+    "status": "index"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dg9p212ngoqpmayhhewp57jj5telumin0bc4cd42w2yoor5mvjc/",
+    "title": "COMPOST #3 — Water Bodies",
+    "descriptions": {
+      "en": "COMPOST issue 3 — an online magazine on Water Bodies",
+      "pl": "COMPOST nr 3 — internetowy magazyn o temacie Water Bodies"
+    },
+    "status": "manifest",
+    "domain": "three.compost.digital"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5di65ztqhl4jwp4uu2zvgsgn58o290k608d4175cmhl8lkocqdhw/",
+    "title": "COMPOST News",
+    "descriptions": {
+      "en": "COMPOST News — news about the magazine and Distributed Press",
+      "pl": "COMPOST News — wiadomości o magazynie i Distributed Press"
+    },
+    "status": "manifest",
+    "domain": "news.compost.digital"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dm3fiiuk6h843uk50j3s3iert35boyclvj30tjfyi04e0drmqk1/",
+    "title": "COMPOST #1",
+    "descriptions": {
+      "en": "COMPOST issue 1 — an archived magazine issue",
+      "pl": "COMPOST nr 1 — archiwalne wydanie magazynu"
+    },
+    "status": "manifest",
+    "domain": "one.compost.digital"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dg8qyzwuu4et8zc6aeja7ddrd14zmnz6wct1c3u58rjvmgu5b0i/",
+    "title": "COMPOST #2",
+    "descriptions": {
+      "en": "COMPOST issue 2 — an archived magazine issue",
+      "pl": "COMPOST nr 2 — archiwalne wydanie magazynu"
+    },
+    "status": "manifest",
+    "domain": "two.compost.digital"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dgtk5uyo6yl3b583ljhvx6l6idir13hjhnxjlu8vtu9ohxwv4lz/",
+    "title": "Save the Archive",
+    "descriptions": {
+      "en": "Save the Archive — a campaign to preserve music archives",
+      "pl": "Save the Archive — kampania dotycząca ochrony archiwów muzycznych"
+    },
+    "status": "manifest",
+    "domain": "www.savethearchive.com"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dg7v8ecmmctz1d5qezx5o8bil2ky4y3iodblsog0qptsp9ngtc3/",
+    "title": "Dixit",
+    "descriptions": {
+      "en": "Dixit — a small independent publisher of writing and ideas",
+      "pl": "Dixit — niezależne małe wydawnictwo tekstów i myśli"
+    },
+    "status": "manifest",
+    "domain": "dixit.sutty.nl"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5diwwgnlxh1u9ktwjzhkqmktq6zghd4fxjitfk6i4bg7igekawku/",
+    "title": "Attentē",
+    "descriptions": {
+      "en": "Attentē — a project about attention and well-being",
+      "pl": "Attentē — projekt poświęcony uwadze i dobrostanowi"
+    },
+    "status": "manifest",
+    "domain": "attente.sutty.nl"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dhr2tkch6a9wz7kd24e0b5kxhudvrztxfvf9dlm2xnstmzbd20x/",
+    "title": "Sim:Tierra",
+    "descriptions": {
+      "en": "Sim:Tierra — a personal artistic and biographical project",
+      "pl": "Sim:Tierra — autorski projekt artystyczny i biograficzny"
+    },
+    "status": "manifest",
+    "domain": "sim-territorio.sutty.nl"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://k51qzi5uqu5dklx8mi0z51yokwewfeq92y2dnnczu86q6q753oa1bnmz0ew34z/",
+    "title": "La Poema",
+    "descriptions": {
+      "en": "La Poema — a literary and poetry project",
+      "pl": "La Poema — projekt literacki i poezja"
+    },
+    "status": "manifest",
+    "domain": "lapoema.sutty.nl"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://desarquivo.org/",
+    "title": "Desarquivo",
+    "descriptions": {
+      "en": "Desarquivo — a digital archive and tools for connecting files",
+      "pl": "Desarquivo — cyfrowe archiwum i narzędzia do łączenia plików"
+    },
+    "status": "index"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://taratsa.id/",
+    "title": "Taratsa",
+    "descriptions": {
+      "en": "Taratsa — a space for creators and artists",
+      "pl": "Taratsa — przestrzeń dla twórców i artystów"
+    },
+    "status": "index"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://stopcopaganda.compost.digital/",
+    "title": "COMPOST Special Issue",
+    "descriptions": {
+      "en": "COMPOST Special Issue — writing about surveillance and society",
+      "pl": "COMPOST Special Issue — teksty o nadzorze i społeczeństwie"
+    },
+    "status": "index"
+  },
+  {
+    "category": "culture",
+    "url": "ipns://chipilin.sutty.nl/",
+    "title": "Chipilin",
+    "descriptions": {
+      "en": "Chipilin — a workshop and DIY experiments",
+      "pl": "Chipilin — pracownia i eksperymenty DIY"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5djteufrelfxdxc9rh6d1a3ps1fr3o3ds4vwr9sf0xzto8oakawc/",
+    "title": "Mauve's Blog",
+    "descriptions": {
+      "en": "Mauve's Blog — articles about the decentralized web",
+      "pl": "Mauve's Blog — artykuły o zdecentralizowanym internecie"
+    },
+    "status": "manifest",
+    "domain": "blog.mauve.moe"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5dkyebpkw5k4kkecddn0bnd9zch18g9bpb4htoulp439uyb4gugc/",
+    "title": "RangerMauve",
+    "descriptions": {
+      "en": "RangerMauve — the personal site of a P2P technology creator",
+      "pl": "RangerMauve — osobista strona twórcy technologii P2P"
+    },
+    "status": "manifest",
+    "domain": "ranger.mauve.moe"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5dkhjpjanm71tkvxggyoedsqogqo4ev41w8p4etrzume8zzt4oyr/",
+    "title": "Hypha Does Cosmos",
+    "descriptions": {
+      "en": "Hypha Does Cosmos — a blog about decentralization experiments",
+      "pl": "Hypha Does Cosmos — blog o eksperymentach z decentralizacją"
+    },
+    "status": "manifest",
+    "domain": "hyphadoescosmos.sutty.nl"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5diuz448ecpx8bsh6m6lzag8y2anb704rpu1bu468abz7hmnxyp3/",
+    "title": "DOLAGASAPE",
+    "descriptions": {
+      "en": "DOLAGASAPE — a literary and commentary blog",
+      "pl": "DOLAGASAPE — blog literacki i publicystyczny"
+    },
+    "status": "manifest",
+    "domain": "dolagasape.sutty.nl"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5diwp5t2byodoxy6m0v5usedqg5vjdrrndqqkegxdn3jyqpdgxkv/",
+    "title": "Feelings about the Internet",
+    "descriptions": {
+      "en": "Feelings about the Internet — essays and reflections on the internet",
+      "pl": "Feelings about the Internet — eseje i refleksje o internecie"
+    },
+    "status": "manifest",
+    "domain": "laurens.sutty.nl"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5dkt322f5wji19bprr9vdvo6ob5xq5wn2tajvz9wmq76dop5pbk0/",
+    "title": "Mai Thoughts",
+    "descriptions": {
+      "en": "Mai Thoughts — personal thoughts and blog posts",
+      "pl": "Mai Thoughts — osobiste przemyślenia i wpisy blogowe"
+    },
+    "status": "manifest",
+    "domain": "maiblog.sutty.nl"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5dhfp3ftk1qll6tbcvtviru3lw8bdh05k60iypk3lyzlx6675by5/",
+    "title": "Barrio Marte",
+    "descriptions": {
+      "en": "Barrio Marte — reviews, essays and cultural criticism",
+      "pl": "Barrio Marte — recenzje, eseje i krytyka kultury"
+    },
+    "status": "manifest",
+    "domain": "mapasperdidos.sutty.nl"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://k51qzi5uqu5dhhrryrnbzkimvrs2cvv5qep0tu49qiek72atdzd6tsnalyl1a9/",
+    "title": "Bitácora Digital",
+    "descriptions": {
+      "en": "Bitácora Digital — an independent publishing project",
+      "pl": "Bitácora Digital — niezależny projekt publikacyjny"
+    },
+    "status": "manifest",
+    "domain": "bitacoradigital.sutty.nl"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://chapien.net/",
+    "title": "The Claire Scrolls",
+    "descriptions": {
+      "en": "The Claire Scrolls — Claire's personal blog",
+      "pl": "The Claire Scrolls — osobisty blog Claire"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://manasiwibi.com/",
+    "title": "Wibi",
+    "descriptions": {
+      "en": "Wibi — a personal blog",
+      "pl": "Wibi — osobisty blog"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://mylesb.ca/",
+    "title": "Myles Braithwaite",
+    "descriptions": {
+      "en": "Myles Braithwaite — a software engineer's personal site",
+      "pl": "Myles Braithwaite — prywatna strona inżyniera oprogramowania"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://sorby.xyz/",
+    "title": "Sorby",
+    "descriptions": {
+      "en": "Sorby — a personal blog",
+      "pl": "Sorby — osobisty blog"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://sunilshrestha.com/",
+    "title": "Sunil Shrestha",
+    "descriptions": {
+      "en": "Sunil Shrestha — an engineer and researcher's site",
+      "pl": "Sunil Shrestha — strona inżyniera i badacza"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://tommi.space/",
+    "title": "Tommi Space",
+    "descriptions": {
+      "en": "Tommi Space — a personal website",
+      "pl": "Tommi Space — osobista strona internetowa"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://vincentcharlebois.com/",
+    "title": "Vincent Charlebois",
+    "descriptions": {
+      "en": "Vincent Charlebois — interfaces and distributed infrastructure",
+      "pl": "Vincent Charlebois — interfejsy i infrastruktura rozproszona"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://espejogato.sutty.nl/",
+    "title": "El Cuarto de GatoOscuro — mirror",
+    "descriptions": {
+      "en": "El Cuarto de GatoOscuro — a mirror of a personal blog",
+      "pl": "El Cuarto de GatoOscuro — lustro osobistego bloga"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://lesbradigatis.sutty.nl/",
+    "title": "Les Bradigatis",
+    "descriptions": {
+      "en": "Les Bradigatis — a blog about slow-living strategies",
+      "pl": "Les Bradigatis — blog o strategiach powolnego życia"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://sombrasgato.sutty.nl/",
+    "title": "El Cuarto de GatoOscuro",
+    "descriptions": {
+      "en": "El Cuarto de GatoOscuro — a blog and personal writing",
+      "pl": "El Cuarto de GatoOscuro — blog i osobiste teksty"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://taolicus.sutty.nl/",
+    "title": "Tao",
+    "descriptions": {
+      "en": "Tao — a personal blog by a writer from Chile",
+      "pl": "Tao — osobisty blog autora z Chile"
+    },
+    "status": "index"
+  },
+  {
+    "category": "blogs",
+    "url": "ipns://vevergarden.sutty.nl/",
+    "title": "Vever Garden",
+    "descriptions": {
+      "en": "Vever Garden — a small personal blog",
+      "pl": "Vever Garden — mały prywatny blog"
+    },
+    "status": "index"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://k51qzi5uqu5dki8nou2gkoyp2ri8kdfrdvrh5u90zub4414oj3hp2m6yb9dj32/",
+    "title": "Amo Lxs Capibaras",
+    "descriptions": {
+      "en": "Amo Lxs Capibaras — a collection of capybara photographs",
+      "pl": "Amo Lxs Capibaras — kolekcja fotografii kapibar"
+    },
+    "status": "manifest",
+    "domain": "amoloscapibaras.sutty.nl"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://k51qzi5uqu5dix70mb6j8odhzyktg2r5zqo9723udaxrxu260bfiq6msyx048m/",
+    "title": "Acrylic Paintings",
+    "descriptions": {
+      "en": "Acrylic Paintings — a gallery of acrylic paintings",
+      "pl": "Acrylic Paintings — galeria obrazów akrylowych"
+    },
+    "status": "manifest",
+    "domain": "art.sutty.nl"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://k51qzi5uqu5dkpwtogks3wouxyhuerj8ajpgbbxyehoj7dux39n0b8kck3oow4/",
+    "title": "Collages",
+    "descriptions": {
+      "en": "Collages — a gallery of collages and visual works",
+      "pl": "Collages — galeria kolaży i prac wizualnych"
+    },
+    "status": "manifest",
+    "domain": "collage.sutty.nl"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://scott.ee/",
+    "title": "Scott",
+    "descriptions": {
+      "en": "Scott — a product and technology designer's portfolio",
+      "pl": "Scott — portfolio projektanta produktów i technologii"
+    },
+    "status": "index"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://gggp.sutty.nl/",
+    "title": "Giulio Pinotti",
+    "descriptions": {
+      "en": "Giulio Pinotti — a creative director and DJ's portfolio",
+      "pl": "Giulio Pinotti — portfolio dyrektora kreatywnego i DJ-a"
+    },
+    "status": "index"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://laloica.sutty.nl/",
+    "title": "La Loica",
+    "descriptions": {
+      "en": "La Loica — illustration, design and crafts",
+      "pl": "La Loica — ilustracje, projektowanie i rękodzieło"
+    },
+    "status": "index"
+  },
+  {
+    "category": "graphics",
+    "url": "ipns://yantradyes.sutty.nl/",
+    "title": "Yantra Dyes",
+    "descriptions": {
+      "en": "Yantra Dyes — hand-dyed textiles and tie-dye",
+      "pl": "Yantra Dyes — ręcznie barwione tkaniny i tie-dye"
+    },
+    "status": "index"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://k51qzi5uqu5dlkp97gklqu2dx0gey0mxfrb49aqx3ineaemwwjti0mhaeywpwf/",
+    "title": "Radio La Zarzamora",
+    "descriptions": {
+      "en": "Radio La Zarzamora — an independent radio station",
+      "pl": "Radio La Zarzamora — niezależna stacja radiowa"
+    },
+    "status": "manifest",
+    "domain": "lazarzamoraradio.sutty.nl"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://k51qzi5uqu5di21xyw26r6u2k3aq6mmwf8hgtm5j6bb7dicgi8llozi85m371j/",
+    "title": "Radio Bocina 55",
+    "descriptions": {
+      "en": "Radio Bocina 55 — local community media",
+      "pl": "Radio Bocina 55 — medium lokalne i społeczne"
+    },
+    "status": "manifest",
+    "domain": "radiobocina55.sutty.nl"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://k51qzi5uqu5di8kioe6v6tr1vbsz8m7l9v2muiqz5uam8r5ziqs93n60njgapv/",
+    "title": "Radio Ciudad Digital",
+    "descriptions": {
+      "en": "Radio Ciudad Digital — news and radio programs",
+      "pl": "Radio Ciudad Digital — informacje i programy radiowe"
+    },
+    "status": "manifest",
+    "domain": "radiociudaddigital.sutty.nl"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://k51qzi5uqu5dk0y492hq9pg8t6cvv99b0bh1dmaeovl6qwtoeff4ex6327z90g/",
+    "title": "Radio Padiuxi",
+    "descriptions": {
+      "en": "Radio Padiuxi — community radio",
+      "pl": "Radio Padiuxi — radio społecznościowe"
+    },
+    "status": "manifest",
+    "domain": "radiopadiuxicapulalpam.sutty.nl"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://k51qzi5uqu5dgiytpjzjhjvolw999gr5njykz3o58cmjcsqqmvbctdcjeoudqx/",
+    "title": "Radio Sonodoc",
+    "descriptions": {
+      "en": "Radio Sonodoc — an educational and documentary radio project",
+      "pl": "Radio Sonodoc — projekt edukacyjny i dokumentalny wokół radia"
+    },
+    "status": "manifest",
+    "domain": "radiosonodoc.sutty.nl"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://k51qzi5uqu5dk5orb2vcvgxgpfrh695xrl96q3gpolt9badh1ns8a7qqee5pjv/",
+    "title": "Primera Stereo",
+    "descriptions": {
+      "en": "Primera Stereo — an internet radio station",
+      "pl": "Primera Stereo — internetowa stacja radiowa"
+    },
+    "status": "manifest",
+    "domain": "primerastereo.sutty.nl"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://emisoraemecu.sutty.nl/",
+    "title": "Emisora EME",
+    "descriptions": {
+      "en": "Emisora EME — radio and media material",
+      "pl": "Emisora EME — radio i materiały medialne"
+    },
+    "status": "index"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://radiofmlati2.sutty.nl/",
+    "title": "Radio FM Lati 2",
+    "descriptions": {
+      "en": "Radio FM Lati 2 — a music station's website",
+      "pl": "Radio FM Lati 2 — strona stacji muzycznej"
+    },
+    "status": "index"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://radioluzfm1039.sutty.nl/",
+    "title": "Radio Luz",
+    "descriptions": {
+      "en": "Radio Luz — internet radio",
+      "pl": "Radio Luz — radio internetowe"
+    },
+    "status": "index"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://radiosanjavier941.sutty.nl/",
+    "title": "Radio San Javier 94.1 FM",
+    "descriptions": {
+      "en": "Radio San Javier 94.1 FM — a local radio station",
+      "pl": "Radio San Javier 94.1 FM — lokalna stacja radiowa"
+    },
+    "status": "index"
+  },
+  {
+    "category": "radio",
+    "url": "ipns://soundpojectradio.sutty.nl/",
+    "title": "Sound Project Radio",
+    "descriptions": {
+      "en": "Sound Project Radio — a community internet radio station's site",
+      "pl": "Sound Project Radio — strona społecznej stacji internetowej"
+    },
+    "status": "index"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://k51qzi5uqu5dlmj8c05a6xk0g0n09x2m3a76lq3ahemgwtsr8s0r4lax9f5yvp/",
+    "title": "Hypha",
+    "descriptions": {
+      "en": "Hypha — a technology cooperative working on an open internet",
+      "pl": "Hypha — kooperatywa technologiczna pracująca nad otwartym internetem"
+    },
+    "status": "manifest",
+    "domain": "hypha.coop"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://k51qzi5uqu5dipa4u1p23edsv8jub2pl4zm635hapt52po19o0fplsvlv0g0bf/",
+    "title": "Fight for the Future",
+    "descriptions": {
+      "en": "Fight for the Future — digital rights campaigns",
+      "pl": "Fight for the Future — kampanie na rzecz praw cyfrowych"
+    },
+    "status": "manifest",
+    "domain": "www.fightforthefuture.org"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://k51qzi5uqu5dkd1lhb3lg30xztrc97q3iwy2g2vy1mp6y8ng1d6piigarjyjjz/",
+    "title": "Filecoin Foundation for the Decentralized Web",
+    "descriptions": {
+      "en": "Filecoin Foundation for the Decentralized Web — supporting an open internet",
+      "pl": "Filecoin Foundation for the Decentralized Web — wsparcie dla otwartego internetu"
+    },
+    "status": "manifest",
+    "domain": "ffdweb.org"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://k51qzi5uqu5dgmxhjlkpa72lty9y6splw0zzxqkt7w9w5s2oypovz5f7eqawlz/",
+    "title": "Defensa del Territorio",
+    "descriptions": {
+      "en": "Defensa del Territorio — a meeting about protecting territories",
+      "pl": "Defensa del Territorio — strona spotkania o ochronie terytoriów"
+    },
+    "status": "manifest",
+    "domain": "defensadelterritorio.sutty.nl"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://www.clearviewcopout.org/",
+    "title": "Clearview CopOut",
+    "descriptions": {
+      "en": "Clearview CopOut — a campaign about facial recognition",
+      "pl": "Clearview CopOut — kampania dotycząca rozpoznawania twarzy"
+    },
+    "status": "index"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://www.keepkhan.com/",
+    "title": "Keep Lina Khan",
+    "descriptions": {
+      "en": "Keep Lina Khan — a social campaign website",
+      "pl": "Keep Lina Khan — strona kampanii społecznej"
+    },
+    "status": "index"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://www.stopcopaganda.org/",
+    "title": "Stop Surveillance Copaganda",
+    "descriptions": {
+      "en": "Stop Surveillance Copaganda — a campaign criticizing surveillance",
+      "pl": "Stop Surveillance Copaganda — kampania krytykująca nadzór"
+    },
+    "status": "index"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://take-action-stop-pharmacies-sharing-your-data.fftf.io/",
+    "title": "Stop Pharmacies Sharing Your Data",
+    "descriptions": {
+      "en": "Stop Pharmacies Sharing Your Data — a data privacy campaign",
+      "pl": "Stop Pharmacies Sharing Your Data — kampania o prywatności danych"
+    },
+    "status": "index"
+  },
+  {
+    "category": "organizations",
+    "url": "ipns://elbondicolectivo.sutty.nl/",
+    "title": "El Bondi Colectivo",
+    "descriptions": {
+      "en": "El Bondi Colectivo — a community initiative",
+      "pl": "El Bondi Colectivo — inicjatywa społeczna"
+    },
+    "status": "index"
+  },
+  {
+    "category": "tools",
+    "url": "ipns://k51qzi5uqu5dlcg1b4blmevb6d12nmpi8z5r49ix0gotnmmxuvgasfif6i2l6m/",
+    "title": "Sutty",
+    "descriptions": {
+      "en": "Sutty — a system for creating and publishing static websites",
+      "pl": "Sutty — system tworzenia i publikowania stron statycznych"
+    },
+    "status": "manifest",
+    "domain": "sutty.nl"
+  },
+  {
+    "category": "events",
+    "url": "ipns://dwebcamp.org/",
+    "title": "DWeb Camp",
+    "descriptions": {
+      "en": "DWeb Camp — decentralized web events and community",
+      "pl": "DWeb Camp — wydarzenia i społeczność zdecentralizowanego internetu"
+    },
+    "status": "index"
+  },
+  {
+    "category": "infrastructure",
+    "url": "ipns://k51qzi5uqu5diq6ds8amf7hpimiynnh66nkntebxfoby6gc388eh6fjqcwhqd1/",
+    "title": "Distributed Press",
+    "descriptions": {
+      "en": "Distributed Press — publishing websites on the decentralized web",
+      "pl": "Distributed Press — projekt publikowania witryn w zdecentralizowanej sieci"
+    },
+    "status": "manifest",
+    "domain": "distributed.press"
+  }
+]

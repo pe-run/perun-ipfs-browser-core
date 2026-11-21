@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; connect-src 'self' ws://localhost:*; object-src 'none'; base-uri 'none'; frame-src 'none'"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/resources/branding/perun.svg"
+    />
+    <title>Perun IPFS Browser</title>
+  </head>
+  <body>
+    <div class="window-titlebar">
+      <img
+        class="toolbar-logo"
+        src="/resources/branding/perun.svg"
+        alt=""
+        width="22"
+        height="22"
+      />
+      <span id="window-title">Perun IPFS Browser</span>
+    </div>
+    <header>
+      <div class="row">
+        <div id="tabs"></div>
+        <button id="new" data-i18n-title="newTab" title="New tab">+</button
+        ><button
+          id="settings"
+          data-i18n-title="settings"
+          data-i18n-label="settings"
+          title="Settings"
+          aria-label="Settings"
+        >
+          ⚙</button
+        ><span id="node"></span>
+      </div>
+      <div class="row">
+        <button id="back" data-i18n-title="back" title="Back">←</button
+        ><button id="forward" data-i18n-title="forward" title="Forward">
+          →</button
+        ><button id="reload" data-i18n-title="reload" title="Reload">↻</button
+        ><button id="stop" data-i18n-title="stop" title="Stop">×</button
+        ><button id="home" data-i18n="home">Home</button>
+        <button
+          id="site-settings"
+          data-i18n-title="siteSettings"
+          data-i18n-label="siteSettings"
+          title="Page settings"
+          aria-label="Page settings"
+        >
+          ☷
+        </button>
+        <form id="navigate">
+          <input
+            id="address"
+            aria-label="Address"
+            data-i18n-label="address"
+            data-i18n-placeholder="addressHint"
+            placeholder="https://, ipfs://, ipns://, file://"
+            autocomplete="off"
+            spellcheck="false"
+          /><button data-i18n="open">Open</button>
+        </form>
+        <button
+          id="bookmark"
+          data-i18n-title="bookmark"
+          data-i18n-label="bookmark"
+          aria-label="Add bookmark"
+          aria-pressed="false"
+          title="Add bookmark"
+        >
+          ☆</button
+        ><button id="copy" data-i18n="copy">Copy</button>
+      </div>
+      <nav
+        id="bookmarks-bar"
+        data-i18n-label="bookmarks"
+        aria-label="Bookmarks"
+      ></nav>
+      <div id="message" role="status"></div>
+    </header>
+    <main id="panel">
+      <div class="brand">
+        <img
+          class="start-logo"
+          src="/resources/branding/perun.svg"
+          alt="Logo Perun IPFS Browser"
+          width="96"
+          height="96"
+        />
+        <div>
+          <h1>Perun IPFS Browser</h1>
+          <p id="app-version" aria-live="polite"></p>
+        </div>
+      </div>
+      <p id="about-browser" data-i18n="aboutBrowser"></p>
+      <p data-i18n="intro"></p>
+      <div class="row">
+        <button id="content" data-i18n="returnPage">Return to page</button
+        ><button id="library" data-i18n="library">History and bookmarks</button
+        ><button id="stats" data-i18n="stats">IPFS status</button>
+      </div>
+      <section id="start-bookmarks" aria-labelledby="start-bookmarks-heading">
+        <h2 id="start-bookmarks-heading" data-i18n="bookmarks"></h2>
+        <div id="start-bookmarks-links"></div>
+      </section>
+      <section data-i18n-label="importTitle" aria-label="Add to IPFS">
+        <h2 data-i18n="importTitle"></h2>
+        <p data-i18n="importWarning"></p>
+        <div class="row">
+          <button id="importFiles" data-i18n="importFiles">
+            Add files to IPFS</button
+          ><button id="importDirectory" data-i18n="importDirectory">
+            Add folder to IPFS
+          </button>
+        </div>
+        <div id="importResult" role="status" aria-live="polite"></div>
+      </section>
+      <p data-i18n="sharedWarning"></p>
+      <section id="catalog" aria-labelledby="catalog-heading">
+        <h2 id="catalog-heading" data-i18n="catalog"></h2>
+        <p data-i18n="catalogNote"></p>
+        <p class="catalog-filter">
+          <label for="catalog-category" data-i18n="catalogCategory"></label>
+          <select id="catalog-category"></select>
+        </p>
+        <div id="catalog-links"></div>
+      </section>
+      <section id="details"></section>
+    </main>
+    <dialog id="bookmarks-dialog" aria-labelledby="bookmarks-heading">
+      <div class="dialog-heading">
+        <h2 id="bookmarks-heading" data-i18n="manageBookmarks"></h2>
+        <button data-dismiss data-i18n-label="close">×</button>
+      </div>
+      <p id="bookmark-error" role="status"></p>
+      <label for="bookmark-folder-filter" data-i18n="folder"></label>
+      <select id="bookmark-folder-filter"></select>
+      <form id="bookmark-new-folder">
+        <input
+          id="new-folder-title"
+          maxlength="200"
+          required
+          data-i18n-label="folderName"
+          data-i18n-placeholder="folderName"
+        /><button data-i18n="newFolder"></button>
+      </form>
+      <form id="bookmark-folder-edit" hidden>
+        <input
+          id="folder-title"
+          maxlength="200"
+          required
+          data-i18n-label="folderName"
+        /><input
+          id="folder-order"
+          class="bookmark-position"
+          type="number"
+          min="1"
+          required
+          data-i18n-label="position"
+        /><button data-i18n="save"></button
+        ><button
+          id="remove-folder"
+          type="button"
+          data-i18n="removeFolder"
+        ></button>
+      </form>
+      <p id="folder-delete-note" data-i18n="folderDeleteNote" hidden></p>
+      <div id="bookmark-manager-list"></div>
+    </dialog>
+    <dialog id="settings-dialog" aria-labelledby="settings-heading">
+      <div class="dialog-heading">
+        <h2 id="settings-heading" data-i18n="generalSettings"></h2>
+        <button data-dismiss data-i18n-label="close" aria-label="Close">
+          ×
+        </button>
+      </div>
+      <p>
+        <label
+          ><input type="checkbox" id="restore" checked /><span
+            data-i18n="restore"
+          ></span
+        ></label>
+      </p>
+      <p class="language-setting">
+        <label for="language" data-i18n="language"></label>
+        <select id="language"></select>
+      </p>
+
+      <p data-i18n="permissionsDenied"></p>
+    </dialog>
+    <dialog id="site-dialog" aria-labelledby="site-heading">
+      <div class="dialog-heading">
+        <h2 id="site-heading" data-i18n="siteSettings"></h2>
+        <button data-dismiss data-i18n-label="close" aria-label="Close">
+          ×
+        </button>
+      </div>
+      <p id="site-url"></p>
+      <p data-i18n="siteScope"></p>
+      <p>
+        <label for="site-zoom" data-i18n="zoom"></label>
+        <select id="site-zoom">
+          <option value="50">50%</option>
+          <option value="75">75%</option>
+          <option value="100">100%</option>
+          <option value="125">125%</option>
+          <option value="150">150%</option>
+          <option value="175">175%</option>
+          <option value="200">200%</option>
+        </select>
+      </p>
+      <p>
+        <label
+          ><input type="checkbox" id="site-muted" /><span
+            data-i18n="mute"
+          ></span
+        ></label>
+      </p>
+      <button id="site-reset" data-i18n="resetSite"></button>
+      <section id="site-ipfs">
+        <p data-i18n="pinRoot"></p>
+        <code id="site-cid"></code>
+        <p id="site-pin-state"></p>
+        <div class="row">
+          <button id="pin" data-i18n="pin"></button
+          ><button id="unpin" data-i18n="unpin"></button>
+        </div>
+      </section>
+      <div class="row">
+        <button id="site-copy" data-i18n="copy"></button
+        ><button id="site-copy-source" data-i18n="copySource"></button
+        ><button id="site-bookmark" data-i18n="bookmark"></button>
+      </div>
+      <p data-i18n="permissionsDenied"></p>
+      <p data-i18n="sharedWarning" id="site-shared-warning"></p>
+      <p id="site-error" role="status"></p>
+    </dialog>
+    <script type="module" src="/src/renderer/index.ts"></script>
+  </body>
+</html>
