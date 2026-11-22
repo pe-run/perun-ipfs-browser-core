@@ -59,7 +59,7 @@ npm run make -- --targets appimage
 # Unpacked Linux application:
 ./out/ipfs-browser-linux-x64/ipfs-browser
 # Install the generated DEB (adjust the version if necessary):
-sudo apt install ./out/make/deb/x64/perun-ipfs-browser_0.17.11_amd64.deb
+sudo apt install ./out/make/deb/x64/perun-ipfs-browser_0.17.12_amd64.deb
 ```
 
 `npm run package` creates the unpacked application; `npm run make` creates DEB, RPM, AppImage and ZIP files under `out/make`. Official Kubo **0.43.1** is pinned and SHA-256 verified by `scripts/download-kubo.mjs`, including cached archives. The application never downloads Kubo at runtime. The npm lockfile records dependencies. The current Forge 8 template uses `.mts` configuration files.
