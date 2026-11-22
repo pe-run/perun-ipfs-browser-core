@@ -37,6 +37,7 @@
   "nodeUnavailable": "Knoten nicht verfügbar. Status oben prüfen.",
   "importBusy": "Inhalt auswählen. Hinzufügen und Anheften kann dauern…",
   "canceled": "Dateiauswahl abgebrochen.",
+  "importSaveFailed": "Hinzugefügt und angeheftet. Lokales Speichern fehlgeschlagen: {error}",
   "importSuccess": "Hinzugefügt und angeheftet: {names}. Adresse als Lesezeichen gespeichert.",
   "copyIPFS": "IPFS-Adresse kopieren",
   "openNew": "In neuem Tab öffnen",

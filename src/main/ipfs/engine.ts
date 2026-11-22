@@ -162,11 +162,14 @@ export class KuboEngine implements IPFSEngine {
           const wasReady = this.state === 'ready';
           this.state = 'crashed';
           this.detail = `(${code}): ${kuboFailure(this.logs)}`;
-          if (wasReady) this.scheduleRestart();
+          if (wasReady) {
+            if (Date.now() - this.readySince > 60000) this.restarts = 0;
+            this.scheduleRestart();
+          }
         }
       });
-      const deadline = Date.now() + 30000;
-      while (Date.now() < deadline) {
+      const deadline = AbortSignal.timeout(30000);
+      while (!deadline.aborted && !this.stopping) {
         if (!this.child)
           throw Error(
             (this.state as NodeState) === 'crashed'
@@ -174,7 +177,8 @@ export class KuboEngine implements IPFSEngine {
               : this.detail,
           );
         try {
-          await this.json('id');
+          await this.json('id', {}, deadline);
+          if (deadline.aborted || this.stopping) break;
           await chmod(this.socket, 0o600);
           this.state = 'ready';
           this.detail = '';
@@ -186,8 +190,8 @@ export class KuboEngine implements IPFSEngine {
       }
       throw Error(t('startTimeout', { error: this.logs }));
     } catch (e) {
-      await this.stop();
-      this.state = 'failed';
+      await this.stopChild();
+      this.state = this.stopping ? 'stopped' : 'failed';
       this.detail = (e as Error).message;
       throw e;
     } finally {
@@ -197,14 +201,12 @@ export class KuboEngine implements IPFSEngine {
   // Bounded recovery after a crash of a node that had been running.
   private scheduleRestart() {
     if (!this.autoRestart || this.stopping) return;
-    // A node that stayed up for a while earns a fresh set of attempts.
-    if (Date.now() - this.readySince > 60000) this.restarts = 0;
     if (this.restarts >= restartDelays.length) return;
     const delay = restartDelays[this.restarts++];
     this.restartTimer = setTimeout(() => {
       this.restartTimer = undefined;
       if (this.stopping || this.child || this.starting) return;
-      this.start().catch(() => {});
+      this.start().catch(() => this.scheduleRestart());
     }, delay);
   }
   async rpc(
@@ -371,6 +373,9 @@ export class KuboEngine implements IPFSEngine {
     clearTimeout(this.restartTimer);
     this.restartTimer = undefined;
     for (const abort of this.imports) abort.abort();
+    await this.stopChild();
+  }
+  private async stopChild() {
     const child = this.child;
     if (!child) return;
     await new Promise<void>((resolve) => {

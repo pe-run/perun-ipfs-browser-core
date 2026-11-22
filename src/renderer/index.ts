@@ -489,7 +489,9 @@ function renderImport() {
   const value = imported,
     text = document.createElement('p'),
     url = document.createElement('code');
-  text.textContent = t('importSuccess', { names: value.names.join(', ') });
+  text.textContent = value.saveError
+    ? t('importSaveFailed', { error: value.saveError })
+    : t('importSuccess', { names: value.names.join(', ') });
   url.textContent = value.url;
   result.append(
     text,
@@ -500,6 +502,20 @@ function renderImport() {
     ),
     button(t('openNew'), () => void command({ action: 'new', url: value.url })),
   );
+  if (value.saveError)
+    result.append(
+      button(t('save'), async () => {
+        const updated = await command({
+          action: 'retryImportSave',
+          url: value.url,
+        });
+        if (updated && imported === value) {
+          imported = updated as ImportResult;
+          renderImport();
+          void refreshBookmarks();
+        }
+      }),
+    );
   for (const file of value.files) {
     const row = document.createElement('p');
     row.append(

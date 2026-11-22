@@ -10,6 +10,7 @@ import { createInterface } from 'node:readline';
 import { validCID } from '../../shared/address';
 export type ImportMode = 'files' | 'directory';
 export interface ImportResult {
+  saveError?: string;
   cid: string;
   url: string;
   names: string[];

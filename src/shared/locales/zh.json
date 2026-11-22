@@ -37,6 +37,7 @@
   "nodeUnavailable": "节点不可用。请查看上方状态。",
   "importBusy": "请选择内容。添加和固定可能需要一些时间…",
   "canceled": "已取消选择文件。",
+  "importSaveFailed": "已添加并固定。本地保存失败： {error}",
   "importSuccess": "已添加并固定：{names}。地址已保存到书签。",
   "copyIPFS": "复制 IPFS 地址",
   "openNew": "在新标签页中打开",

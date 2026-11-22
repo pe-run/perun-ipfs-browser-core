@@ -104,6 +104,15 @@ test('restores 31 legacy tabs and remembers the second tab on the next launch', 
       },
     });
   let app: Awaited<ReturnType<typeof launch>> | undefined;
+  async function browserUI(application: Awaited<ReturnType<typeof launch>>) {
+    const chrome = () =>
+      application
+        .context()
+        .pages()
+        .find((page) => page.url().endsWith('/main_window/index.html'));
+    await expect.poll(chrome).toBeDefined();
+    return chrome()!;
+  }
   try {
     await writeFile(fixture, '<title>Loaded tab</title>');
     const db = new DatabaseSync(join(profile, 'browser.sqlite'));
@@ -119,15 +128,21 @@ test('restores 31 legacy tabs and remembers the second tab on the next launch', 
       db.close();
     }
     app = await launch();
-    let ui = await app.firstWindow();
+    let ui = await browserUI(app);
     await expect(ui.locator('.tab')).toHaveCount(31);
     await expect(ui.locator('#address')).toHaveValue(urls[30]);
+    expect(
+      await app.evaluate(
+        ({ BrowserWindow }) =>
+          BrowserWindow.getAllWindows()[0].contentView.children.length,
+      ),
+    ).toBeLessThanOrEqual(2);
     await ui.locator('.tab').nth(1).locator('button').first().click();
     await expect(ui.locator('.tab.active')).toContainText('Loaded tab');
     await expect(ui.locator('#address')).toHaveValue(urls[1]);
     await app.close();
     app = await launch();
-    ui = await app.firstWindow();
+    ui = await browserUI(app);
     await expect(ui.locator('.tab')).toHaveCount(31);
     await expect(ui.locator('.tab').nth(1)).toHaveClass(/active/);
     await expect(ui.locator('#address')).toHaveValue(urls[1]);

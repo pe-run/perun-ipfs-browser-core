@@ -37,6 +37,7 @@
   "nodeUnavailable": "Node unavailable. Check its status above.",
   "importBusy": "Select content. Adding and pinning may take a while…",
   "canceled": "File selection canceled.",
+  "importSaveFailed": "Added and pinned. Local save failed: {error}",
   "importSuccess": "Added and pinned: {names}. Address saved to bookmarks.",
   "copyIPFS": "Copy IPFS address",
   "openNew": "Open in new tab",

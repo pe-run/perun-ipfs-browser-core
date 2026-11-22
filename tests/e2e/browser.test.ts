@@ -5,6 +5,8 @@ import {
 import { test, expect, _electron as electron } from '@playwright/test';
 import type { ElectronApplication, Page } from '@playwright/test';
 import {
+  rename,
+  rmdir,
   mkdtemp,
   rm,
   mkdir,
@@ -557,10 +559,37 @@ test('imports selected files and a directory, copies and opens the CID, handles 
       filePaths: [path, path.replace(/index\.html$/, 'przeczytaj.txt')],
     })) as typeof dialog.showOpenDialog;
   }, file);
-  await ui.locator('#importFiles').click();
-  await expect(ui.locator('#importResult')).toContainText('Dodano i przypięto');
-  const url = (await ui.locator('#importResult code').textContent())!;
-  expect(url).toMatch(/^ipfs:\/\/b[a-z0-9]+\/$/);
+  const bookmarks = join(profile, 'bookmarks.json');
+  await rename(bookmarks, bookmarks + '.backup');
+  await mkdir(bookmarks);
+  let url: string;
+  try {
+    await ui.locator('#importFiles').click();
+    await expect(ui.locator('#importResult')).toContainText(
+      'Błąd zapisu lokalnego',
+    );
+    url = (await ui.locator('#importResult code').textContent())!;
+    expect(url).toMatch(/^ipfs:\/\/b[a-z0-9]+\/$/);
+    await ui
+      .getByRole('button', { name: 'Kopiuj adres IPFS', exact: true })
+      .click();
+    expect(await app.evaluate(({ clipboard }) => clipboard.readText())).toBe(
+      url,
+    );
+  } finally {
+    await rmdir(bookmarks);
+    await rename(bookmarks + '.backup', bookmarks);
+  }
+  // Saving the local record must succeed even after the source file disappears.
+  await rm(note);
+  await ui
+    .locator('#importResult')
+    .getByRole('button', { name: 'Zapisz', exact: true })
+    .click();
+  await expect(ui.locator('#importResult')).not.toContainText(
+    'Błąd zapisu lokalnego',
+  );
+  await expect(ui.locator('#importResult code')).toHaveText(url);
   const favorites = (await ui.evaluate(async () => ({
     folders: await window.browser.command({ action: 'bookmarkFolders' }),
     bookmarks: await window.browser.command({ action: 'bookmarks' }),

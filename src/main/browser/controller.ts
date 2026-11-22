@@ -43,6 +43,7 @@ import {
   loadLocalURL,
   securePreferences,
 } from '../security/policy';
+import type { ImportResult } from '../ipfs/import';
 import type { Store } from '../storage/store';
 import type { IPFSEngine } from '../ipfs/engine';
 type Tab = {
@@ -50,13 +51,13 @@ type Tab = {
   state: TabState;
   home: boolean;
   favicons?: string[];
-  pendingNavigation?: boolean;
   navigationURL?: string;
   /** True until the navigation commits; afterwards the page itself is visible and must stay clickable. */
   awaitingContent?: boolean;
 };
+type SavedTab = Pick<Tab, 'state' | 'home'> & { view?: undefined };
 export class BrowserController {
-  private tabs: Tab[] = [];
+  private tabs: (SavedTab | Tab)[] = [];
   private active = 0;
   private panel = true;
   private toolbarHeight = 112;
@@ -65,6 +66,7 @@ export class BrowserController {
   private loadingIndicator?: WebContentsView;
   private overlay: BrowserState['overlay'] = null;
   private importing = false;
+  private pendingImport?: { result: ImportResult; pinRecorded: boolean };
   private imported = new Set<string>();
   private languagePreference: LanguagePreference;
   constructor(
@@ -132,16 +134,23 @@ export class BrowserController {
     const urls = Array.isArray(saved) ? saved : saved?.urls;
     if (Array.isArray(urls)) {
       const active = Array.isArray(saved) ? urls.length - 1 : saved?.active;
-      let selected: Tab | undefined;
+      let selected: SavedTab | undefined;
       for (const [index, url] of urls.entries()) {
         if (typeof url !== 'string') continue;
         try {
           const address = url ? parseAddress(url).display : '';
-          const tab = this.createView();
-          tab.state.url = address;
-          tab.home = !address;
-          tab.pendingNavigation = Boolean(address);
-          if (address) tab.state.title = address;
+          const tab: SavedTab = {
+            home: !address,
+            state: {
+              id: Number.MAX_SAFE_INTEGER - index,
+              url: address,
+              title: address || t('newTab'),
+              loading: false,
+              back: false,
+              forward: false,
+            },
+          };
+          this.tabs.push(tab);
           if (index === active) selected = tab;
         } catch {
           /* invalid saved tab */
@@ -152,15 +161,20 @@ export class BrowserController {
     this.emit();
   }
   private current() {
-    return this.tabs.find((t) => t.state.id === this.active);
+    const tab = this.tabs.find((t) => t.state.id === this.active);
+    return tab?.view ? tab : undefined;
   }
-  private select(tab?: Tab) {
+  private select(tab?: Tab | SavedTab) {
+    if (tab && !tab.view) {
+      const index = this.tabs.indexOf(tab);
+      const url = tab.state.url;
+      tab = this.createView();
+      this.tabs[index] = tab;
+      this.active = tab.state.id;
+      if (url) this.load(tab, url);
+    }
     this.active = tab?.state.id ?? 0;
     this.panel = tab?.home ?? true;
-    if (tab?.pendingNavigation) {
-      tab.pendingNavigation = false;
-      this.load(tab, tab.state.url);
-    }
     if (tab?.favicons)
       this.favicons.observe(tab.view.webContents.getURL(), tab.favicons);
     this.layout();
@@ -228,6 +242,7 @@ export class BrowserController {
     this.positionLoadingIndicator();
     const [width, height] = this.window.getContentSize();
     for (const t of this.tabs) {
+      if (!t.view) continue;
       t.view.setVisible(
         !this.panel && !this.overlay && t.state.id === this.active,
       );
@@ -242,6 +257,7 @@ export class BrowserController {
   private create(url?: string, image = false) {
     this.overlay = null;
     const tab = this.createView();
+    this.tabs.push(tab);
     this.active = tab.state.id;
     if (url) this.load(tab, url, image);
     else this.panel = true;
@@ -271,7 +287,6 @@ export class BrowserController {
         forward: false,
       },
     };
-    this.tabs.push(tab);
     this.window.contentView.addChildView(view);
     if (this.loadingIndicator)
       this.window.contentView.addChildView(this.loadingIndicator);
@@ -716,7 +731,11 @@ export class BrowserController {
           throw Error('Invalid site preferences');
         this.store.set(`site:${scope}`, next);
         for (const item of this.tabs)
-          if (item.state.url && siteScope(item.state.url) === scope)
+          if (
+            item.view &&
+            item.state.url &&
+            siteScope(item.state.url) === scope
+          )
             this.applySitePreferences(item);
         return this.siteInfo(command);
       }
@@ -758,8 +777,10 @@ export class BrowserController {
         );
         if (i < 0) return;
         const [t] = this.tabs.splice(i, 1);
-        this.window.contentView.removeChildView(t.view);
-        t.view.webContents.close();
+        if (t.view) {
+          this.window.contentView.removeChildView(t.view);
+          t.view.webContents.close();
+        }
         this.select(
           this.active === t.state.id
             ? this.tabs[Math.max(0, i - 1)]
@@ -864,15 +885,16 @@ export class BrowserController {
             directory ? 'directory' : 'files',
           );
           if (this.window.isDestroyed()) return null;
-          this.store.pin(result.cid, true);
           this.imported.add(result.url);
           for (const file of result.files) this.imported.add(file.url);
-          this.store.bookmarkIPFS(result.url, result.names.join(', '));
-          return result;
+          this.pendingImport = { result, pinRecorded: false };
+          return this.saveImported(result.url);
         } finally {
           this.importing = false;
         }
       }
+      case 'retryImportSave':
+        return this.saveImported(command.url);
       case 'copyImportFile':
       case 'copyImported':
         if (!command.url || !this.imported.has(command.url))
@@ -904,12 +926,29 @@ export class BrowserController {
         throw Error('Unknown command');
     }
   }
+  private saveImported(url?: string): ImportResult {
+    const pending = this.pendingImport;
+    if (!pending || pending.result.url !== url) throw Error(t('invalidImport'));
+    const { result } = pending;
+    try {
+      if (!pending.pinRecorded) {
+        this.store.pin(result.cid, true);
+        pending.pinRecorded = true;
+      }
+      this.store.bookmarkIPFS(result.url, result.names.join(', '));
+      this.pendingImport = undefined;
+      return result;
+    } catch (error) {
+      return { ...result, saveError: (error as Error).message };
+    }
+  }
   destroy() {
     this.favicons.stop();
     this.bookmarkMenu?.closePopup(this.window);
     this.bookmarkMenu = undefined;
     for (const t of this.tabs)
-      if (!t.view.webContents.isDestroyed()) t.view.webContents.close();
+      if (t.view && !t.view.webContents.isDestroyed())
+        t.view.webContents.close();
     this.tabs = [];
   }
 }

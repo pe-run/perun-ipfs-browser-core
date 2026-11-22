@@ -37,6 +37,7 @@
   "nodeUnavailable": "Nodo no disponible. Consulta su estado arriba.",
   "importBusy": "Selecciona contenido. Añadir y fijar puede tardar…",
   "canceled": "Selección de archivos cancelada.",
+  "importSaveFailed": "Añadido y fijado. Error al guardar localmente: {error}",
   "importSuccess": "Añadido y fijado: {names}. Dirección guardada en marcadores.",
   "copyIPFS": "Copiar dirección IPFS",
   "openNew": "Abrir en nueva pestaña",

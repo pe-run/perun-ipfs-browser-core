@@ -37,6 +37,7 @@
   "nodeUnavailable": "Nó indisponível. Verifique o estado acima.",
   "importBusy": "Selecione o conteúdo. Adicionar e fixar pode demorar…",
   "canceled": "Seleção de arquivos cancelada.",
+  "importSaveFailed": "Adicionado e fixado. Falha ao salvar localmente: {error}",
   "importSuccess": "Adicionado e fixado: {names}. Endereço salvo nos favoritos.",
   "copyIPFS": "Copiar endereço IPFS",
   "openNew": "Abrir em nova aba",

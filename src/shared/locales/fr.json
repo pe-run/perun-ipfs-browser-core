@@ -37,6 +37,7 @@
   "nodeUnavailable": "Nœud indisponible. Consultez son état ci-dessus.",
   "importBusy": "Sélectionnez le contenu. L’ajout et l’épinglage peuvent prendre du temps…",
   "canceled": "Sélection des fichiers annulée.",
+  "importSaveFailed": "Ajouté et épinglé. Échec de l’enregistrement local : {error}",
   "importSuccess": "Ajouté et épinglé : {names}. Adresse enregistrée dans les favoris.",
   "copyIPFS": "Copier l’adresse IPFS",
   "openNew": "Ouvrir dans un nouvel onglet",

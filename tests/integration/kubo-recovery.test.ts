@@ -1,6 +1,13 @@
 import { it, expect } from 'vitest';
 import { createServer } from 'node:net';
-import { mkdtemp, readFile, writeFile, rm, lstat } from 'node:fs/promises';
+import {
+  mkdtemp,
+  readFile,
+  writeFile,
+  rm,
+  lstat,
+  symlink,
+} from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { KuboEngine } from '../../src/main/ipfs/engine';
@@ -114,17 +121,30 @@ it('reports a missing daemon executable promptly even when the repository alread
 
 it('restarts a node that crashed after it had been running', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'kubo-auto-restart-'));
-  const engine = new KuboEngine(binary, join(dir, 'repo'), true);
+  const executable = join(dir, 'kubo');
+  await symlink(binary, executable);
+  const engine = new KuboEngine(executable, join(dir, 'repo'), true);
   try {
     await engine.start();
     const id = (await engine.json<{ ID: string }>('id')).ID;
     const child = (
       engine as unknown as { child: import('node:child_process').ChildProcess }
     ).child;
+    await rm(executable);
     child.kill('SIGKILL');
-    await expect.poll(() => engine.state).not.toBe('ready');
+    await expect.poll(() => engine.state, { timeout: 8000 }).toBe('failed');
+    await symlink(binary, executable);
     await expect.poll(() => engine.state, { timeout: 30000 }).toBe('ready');
     expect((await engine.json<{ ID: string }>('id')).ID).toBe(id);
+    const restored = (
+      engine as unknown as { child: import('node:child_process').ChildProcess }
+    ).child;
+    restored.kill('SIGKILL');
+    await expect.poll(() => engine.state).toBe('crashed');
+    await engine.stop();
+    const socket = engine.socket;
+    await new Promise((resolve) => setTimeout(resolve, 5500));
+    expect(engine.socket).toBe(socket);
   } finally {
     await engine.stop();
     await rm(dir, { recursive: true, force: true });
@@ -156,3 +176,33 @@ it('keeps user storage limits and rejects a malformed repository config', async 
     await rm(dir, { recursive: true, force: true });
   }
 }, 90000);
+
+it('aborts a silent readiness RPC within the startup budget', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'kubo-silent-'));
+  const repo = join(dir, 'repo');
+  const owner = new KuboEngine(binary, repo, true);
+  const executable = join(dir, 'silent-kubo');
+  const engine = new KuboEngine(executable, repo, true);
+  try {
+    await owner.start();
+    await owner.stop();
+    await writeFile(
+      executable,
+      `#!${process.execPath}
+const fs = require('node:fs');
+const socket = JSON.parse(fs.readFileSync(process.env.IPFS_PATH + '/config')).Addresses.API.slice(5);
+require('node:net').createServer(client => client.resume()).listen(socket);
+`,
+      { mode: 0o700 },
+    );
+    const started = performance.now();
+    await expect(engine.start()).rejects.toThrow();
+    expect(performance.now() - started).toBeGreaterThanOrEqual(29000);
+    expect(performance.now() - started).toBeLessThan(40000);
+    expect(engine.state).toBe('failed');
+  } finally {
+    await engine.stop();
+    await owner.stop();
+    await rm(dir, { recursive: true, force: true });
+  }
+}, 45000);

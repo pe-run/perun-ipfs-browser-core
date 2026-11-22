@@ -37,6 +37,7 @@
   "nodeUnavailable": "Węzeł niedostępny. Sprawdź stan węzła powyżej.",
   "importBusy": "Wybierz zawartość. Dodawanie i przypinanie może potrwać…",
   "canceled": "Anulowano wybór plików.",
+  "importSaveFailed": "Dodano i przypięto. Błąd zapisu lokalnego: {error}",
   "importSuccess": "Dodano i przypięto: {names}. Adres zapisano w zakładkach.",
   "copyIPFS": "Kopiuj adres IPFS",
   "openNew": "Otwórz w nowej karcie",
