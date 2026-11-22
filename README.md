@@ -25,15 +25,15 @@ Linux **x86_64** with Electron's desktop libraries (GTK, NSS, libgbm, ALSA), an 
 For a **public repository**, with `git`, `curl`, `xz-utils`, `dpkg` and `sudo` installed:
 
 ```bash
-bash -c 'script=$(curl -fsSL https://raw.githubusercontent.com/raphaellafar/perun-ipfs-browser/main/scripts/install.sh) && bash -c "$script"'
+bash -c 'script=$(curl -fsSL https://raw.githubusercontent.com/pe-run/perun-ipfs-browser-core/main/scripts/install.sh) && bash -c "$script"'
 ```
 
 The installer downloads the current `main`, provisions verified Node 24 if needed, runs `npm ci`, builds the DEB with Kubo, and calls `sudo apt-get install --reinstall`. Build steps run as your ordinary user; only package installation uses sudo. Building takes several minutes and needs internet access. You do not need to install Node or Kubo yourself.
 
-Until the repository becomes public, the raw public URL will not work. Authorized users can install through a signed-in GitHub CLI:
+For a **private repository**, use GitHub CLI signed in to an account with repository access:
 
 ```bash
-bash -c 'script=$(gh api repos/raphaellafar/perun-ipfs-browser/contents/scripts/install.sh -H "Accept: application/vnd.github.raw") && bash -c "$script"'
+bash -c 'script=$(gh api repos/pe-run/perun-ipfs-browser-core/contents/scripts/install.sh -H "Accept: application/vnd.github.raw") && bash -c "$script"'
 ```
 
 Run **Perun IPFS Browser** from your application menu or use `ipfs-browser`. Uninstall with `sudo apt remove ipfs-browser`; your profile is retained. Re-running the installer rebuilds the current source. There is no automatic updater.
@@ -41,6 +41,8 @@ Run **Perun IPFS Browser** from your application menu or use `ipfs-browser`. Uni
 ## Build and run from source
 
 ```bash
+git clone https://github.com/pe-run/perun-ipfs-browser-core.git
+cd perun-ipfs-browser-core
 nvm install
 nvm use
 npm ci

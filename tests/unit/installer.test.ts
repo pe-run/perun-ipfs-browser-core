@@ -59,7 +59,7 @@ it('clones public HTTPS without GitHub auth, builds without sudo, installs only 
     const r = f.run();
     expect(r.status, r.stderr).toBe(0);
     expect(readFileSync(f.env.INSTALL_TEST_GIT, 'utf8')).toContain(
-      'https://github.com/raphaellafar/perun-ipfs-browser.git',
+      'https://github.com/pe-run/perun-ipfs-browser-core.git',
     );
     expect(readFileSync(f.env.INSTALL_TEST_GIT, 'utf8')).not.toContain(
       'gh auth',

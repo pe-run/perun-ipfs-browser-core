@@ -48,7 +48,7 @@ const config: ForgeConfig = {
     new MakerRpm({
       options: {
         icon: 'resources/branding/perun.png',
-        homepage: 'https://github.com/raphaellafar/perun-ipfs-browser',
+        homepage: 'https://github.com/pe-run/perun-ipfs-browser-core',
         categories: ['Network'],
         ...rpmSpec,
       },
@@ -57,7 +57,7 @@ const config: ForgeConfig = {
       options: {
         icon: 'resources/branding/perun.png',
         maintainer: 'Perun IPFS Browser contributors',
-        homepage: 'https://github.com/raphaellafar/perun-ipfs-browser',
+        homepage: 'https://github.com/pe-run/perun-ipfs-browser-core',
         categories: ['Network'],
       },
     }),

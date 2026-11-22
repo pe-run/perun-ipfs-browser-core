@@ -2,7 +2,7 @@
 # Build as the invoking user; elevate only the final apt installation.
 set -euo pipefail
 umask 022
-repo='raphaellafar/perun-ipfs-browser'
+repo='exampleuser/perun-ipfs-browser'
 node_version='24.22.3'
 node_sha='4f2b175a6d53a5c617a80dba2676238a0688cef28c6da4eba35c7d844e66fcfb'
 source_dir=''

@@ -16,16 +16,16 @@ Linux x86_64 z bibliotekami wymaganymi przez Electron (m.in. GTK, NSS, libgbm, A
 
 Ubuntu/Debian x86_64. Wymagane narzędzia: `git`, `curl`, `xz-utils`, `dpkg`, `sudo` (można je zainstalować przez `sudo apt install git curl xz-utils dpkg`). Konto GitHub i GitHub CLI nie są wymagane.
 
-**Docelowe polecenie, gdy repozytorium będzie publiczne:**
+**Dla publicznego repozytorium:**
 
 ```bash
-bash -c 'script=$(curl -fsSL https://raw.githubusercontent.com/raphaellafar/perun-ipfs-browser/main/scripts/install.sh) && bash -c "$script"'
+bash -c 'script=$(curl -fsSL https://raw.githubusercontent.com/pe-run/perun-ipfs-browser-core/main/scripts/install.sh) && bash -c "$script"'
 ```
 
-Repozytorium obecnie pozostaje prywatne. Powyższy publiczny URL zacznie działać po zmianie widoczności projektu. W fazie prywatnej, dla konta z dostępem i po `gh auth login`, odpowiednik polecenia to:
+Dla **prywatnego repozytorium** użyj GitHub CLI po zalogowaniu przez `gh auth login` na konto z dostępem do repozytorium:
 
 ```bash
-bash -c 'script=$(gh api repos/raphaellafar/perun-ipfs-browser/contents/scripts/install.sh -H "Accept: application/vnd.github.raw") && bash -c "$script"'
+bash -c 'script=$(gh api repos/pe-run/perun-ipfs-browser-core/contents/scripts/install.sh -H "Accept: application/vnd.github.raw") && bash -c "$script"'
 ```
 
 Instalator pobiera `main` przez Git HTTPS, używa Node 24 (w razie potrzeby pobiera przypięte wydanie z kontrolą SHA-256), wykonuje `npm ci`, buduje DEB z Kubo i uruchamia `sudo apt-get install`. Budowanie trwa kilka minut i wymaga internetu oraz miejsca na zależności i pakiet. Instalator nie wymaga ręcznej instalacji Node ani Kubo. Hasło sudo podajesz tylko do instalacji pakietu; kod i zależności budowane są jako zwykły użytkownik. Pliki tymczasowe są sprzątane, a profil użytkownika pozostaje bez zmian. Jeśli dostępne jest zalogowane `gh`, może ono opcjonalnie uwierzytelnić klonowanie prywatnego repozytorium; publiczna instalacja działa bez niego.
@@ -37,6 +37,8 @@ Instalacja z lokalnego checkoutu: `bash scripts/install.sh --source .`. Przygoto
 ## Uruchomienie ze źródeł
 
 ```bash
+git clone https://github.com/pe-run/perun-ipfs-browser-core.git
+cd perun-ipfs-browser-core
 nvm install
 nvm use
 npm ci
