@@ -8,11 +8,23 @@ import { navigationAddress } from '../../shared/address';
 import type { KuboEngine } from './engine';
 // Kubo reports missing paths only in the message text of an HTTP 500.
 export const notFoundPattern = /not found|no link|does not exist/i;
+function waitFor<T>(pending: Promise<T>, signal: AbortSignal): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const abort = () => reject(signal.reason);
+    signal.addEventListener('abort', abort, { once: true });
+    void pending.then(resolve, reject).finally(() => {
+      signal.removeEventListener('abort', abort);
+    });
+    if (signal.aborted) abort();
+  });
+}
 export async function serveP2P(
   request: Request,
   engine: KuboEngine,
 ): Promise<Response> {
   try {
+    const { signal } = request;
+    signal.throwIfAborted();
     if (!['GET', 'HEAD'].includes(request.method))
       return new Response('Only GET/HEAD', { status: 405 });
     let address: ReturnType<typeof navigationAddress>;
@@ -32,12 +44,14 @@ export async function serveP2P(
       return new Response('Missing content path', { status: 400 });
     let root =
       address.kind === 'ipns'
-        ? await engine.resolveIPNS(address.root)
+        ? await waitFor(engine.resolveIPNS(address.root), signal)
         : `/ipfs/${address.root}`;
     let path = `${root}${decodeURIComponent(address.path)}`;
-    let stat = await engine.json<{ Type: string; Size: number }>('files/stat', {
-      arg: path,
-    });
+    let stat = await engine.json<{ Type: string; Size: number }>(
+      'files/stat',
+      { arg: path },
+      signal,
+    );
     if (stat.Type === 'directory') {
       if (!new URL(request.url).pathname.endsWith('/')) {
         const u = new URL(request.url);
@@ -49,14 +63,18 @@ export async function serveP2P(
       }
       let index: typeof stat | undefined;
       try {
-        index = await engine.json('files/stat', { arg: path + 'index.html' });
+        index = await engine.json(
+          'files/stat',
+          { arg: path + 'index.html' },
+          signal,
+        );
       } catch (error) {
         if (!notFoundPattern.test((error as Error).message)) throw error;
       }
       if (!index || index.Type !== 'file') {
         const listing = await engine.json<{
           Objects: { Links: DirectoryLink[] | null }[];
-        }>('ls', { arg: path, 'resolve-type': 'true', size: 'false' });
+        }>('ls', { arg: path, 'resolve-type': 'true', size: 'false' }, signal);
         return directoryResponse(
           request,
           address.display,
@@ -134,6 +152,7 @@ export async function serveP2P(
     ) as ReadableStream<Uint8Array>;
     return new Response(body, { status, headers });
   } catch (error) {
+    request.signal.throwIfAborted();
     const message = (error as Error).message;
     const status = notFoundPattern.test(message) ? 404 : 502;
     return new Response(t('ipfsFailed', { error: localizeMessage(message) }), {
@@ -142,8 +161,15 @@ export async function serveP2P(
     });
   }
 }
-export function installP2P(session: Session, engine: KuboEngine) {
-  session.protocol.handle('p2p', (request) => serveP2P(request, engine));
+export function installP2P(
+  session: Session,
+  engine: KuboEngine,
+  startup: Promise<void>,
+) {
+  session.protocol.handle('p2p', async (request) => {
+    await waitFor(startup, request.signal);
+    return serveP2P(request, engine);
+  });
   for (const scheme of ['ipfs', 'ipns']) {
     session.protocol.handle(scheme, (request) => {
       try {

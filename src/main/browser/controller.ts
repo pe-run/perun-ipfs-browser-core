@@ -50,6 +50,8 @@ type Tab = {
   state: TabState;
   home: boolean;
   favicons?: string[];
+  pendingNavigation?: boolean;
+  navigationURL?: string;
   /** True until the navigation commits; afterwards the page itself is visible and must stay clickable. */
   awaitingContent?: boolean;
 };
@@ -124,20 +126,50 @@ export class BrowserController {
       this.emit();
       return;
     }
-    for (const url of this.store.get<string[]>('tabs', []).slice(0, 30)) {
-      try {
-        this.create(url);
-      } catch {
-        /* invalid saved tab */
+    const saved = this.store.get<
+      null | string[] | { urls: string[]; active: number }
+    >('tabs', null);
+    const urls = Array.isArray(saved) ? saved : saved?.urls;
+    if (Array.isArray(urls)) {
+      const active = Array.isArray(saved) ? urls.length - 1 : saved?.active;
+      let selected: Tab | undefined;
+      for (const [index, url] of urls.entries()) {
+        if (typeof url !== 'string') continue;
+        try {
+          const address = url ? parseAddress(url).display : '';
+          const tab = this.createView();
+          tab.state.url = address;
+          tab.home = !address;
+          tab.pendingNavigation = Boolean(address);
+          if (address) tab.state.title = address;
+          if (index === active) selected = tab;
+        } catch {
+          /* invalid saved tab */
+        }
       }
+      this.select(selected ?? this.tabs.at(-1));
     }
     this.emit();
   }
   private current() {
     return this.tabs.find((t) => t.state.id === this.active);
   }
+  private select(tab?: Tab) {
+    this.active = tab?.state.id ?? 0;
+    this.panel = tab?.home ?? true;
+    if (tab?.pendingNavigation) {
+      tab.pendingNavigation = false;
+      this.load(tab, tab.state.url);
+    }
+    if (tab?.favicons)
+      this.favicons.observe(tab.view.webContents.getURL(), tab.favicons);
+    this.layout();
+  }
   private persist() {
-    this.store.set('tabs', this.tabs.map((t) => t.state.url).filter(Boolean));
+    this.store.set('tabs', {
+      urls: this.tabs.map((tab) => tab.state.url),
+      active: this.tabs.findIndex((tab) => tab.state.id === this.active),
+    });
   }
   private lastState = '';
   /** Send the state to the interface; unchanged state is skipped unless forced. */
@@ -209,6 +241,16 @@ export class BrowserController {
   }
   private create(url?: string, image = false) {
     this.overlay = null;
+    const tab = this.createView();
+    this.active = tab.state.id;
+    if (url) this.load(tab, url, image);
+    else this.panel = true;
+    this.layout();
+    this.emit();
+    this.persist();
+    return tab;
+  }
+  private createView() {
     const view = new WebContentsView({
       webPreferences: {
         ...securePreferences,
@@ -219,7 +261,7 @@ export class BrowserController {
     wc.setZoomMode('isolated');
     const tab: Tab = {
       view,
-      home: !url,
+      home: true,
       state: {
         id: wc.id,
         url: '',
@@ -233,7 +275,6 @@ export class BrowserController {
     this.window.contentView.addChildView(view);
     if (this.loadingIndicator)
       this.window.contentView.addChildView(this.loadingIndicator);
-    this.active = wc.id;
     wc.setWindowOpenHandler(({ url }) => {
       try {
         const target = navigationAddress(
@@ -323,6 +364,16 @@ export class BrowserController {
     };
     wc.on('will-navigate', guard);
     wc.on('will-redirect', guard);
+    wc.on('did-start-navigation', ({ url, isMainFrame, isSameDocument }) => {
+      if (isMainFrame && !isSameDocument) {
+        tab.navigationURL = url;
+        tab.state.error = undefined;
+        this.emit();
+      }
+    });
+    wc.on('did-redirect-navigation', ({ url, isMainFrame }) => {
+      if (isMainFrame) tab.navigationURL = url;
+    });
     wc.on('did-start-loading', () => {
       if (this.active === wc.id && !this.panel) this.previewLink('');
       tab.state.loading = true;
@@ -336,6 +387,8 @@ export class BrowserController {
       this.update(tab);
     });
     wc.on('did-navigate', () => {
+      tab.navigationURL = undefined;
+      tab.state.error = undefined;
       tab.awaitingContent = false;
       this.update(tab);
       this.applySitePreferences(tab);
@@ -358,8 +411,8 @@ export class BrowserController {
       if (this.active === wc.id && this.favicons.observe(wc.getURL(), urls))
         this.emit();
     });
-    wc.on('did-fail-load', (_event, code, description, _url, isMain) => {
-      if (isMain && code !== -3) {
+    wc.on('did-fail-load', (_event, code, description, url, isMain) => {
+      if (isMain && code !== -3 && url === tab.navigationURL) {
         tab.state.error = t('navigationFailed', { code, error: description });
         tab.state.loading = false;
         tab.awaitingContent = false;
@@ -372,10 +425,6 @@ export class BrowserController {
       tab.state.error = t('rendererGone', { error: details.reason });
       this.emit();
     });
-    if (url) this.load(tab, url, image);
-    else this.panel = true;
-    this.layout();
-    this.emit();
     return tab;
   }
   private update(tab: Tab) {
@@ -402,14 +451,13 @@ export class BrowserController {
     this.layout();
     tab.view.webContents.focus();
     const contents = tab.view.webContents;
+    tab.navigationURL = a.internal;
     const loading =
       a.kind === 'file'
         ? loadLocalURL(contents, a.internal)
         : contents.loadURL(a.internal);
-    void loading.catch((e: Error) => {
-      tab.state.error = e.message;
-      this.emit();
-    });
+    // did-fail-load reports navigation failures without surfacing cancelled promises.
+    void loading.catch(() => {});
     this.emit();
   }
   private scopedTab(command: Command): Tab {
@@ -693,21 +741,16 @@ export class BrowserController {
         if (!command.url) throw Error(t('invalidAddress'));
         this.load(tab || this.create(), command.url);
         return;
-      case 'switch':
+      case 'switch': {
         this.overlay = null;
-        if (this.tabs.some((t) => t.state.id === command.id)) {
-          this.active = command.id!;
-          const selected = this.current();
-          if (selected?.favicons)
-            this.favicons.observe(
-              selected.view.webContents.getURL(),
-              selected.favicons,
-            );
-          this.panel = selected?.home ?? true;
-          this.layout();
+        const selected = this.tabs.find((tab) => tab.state.id === command.id);
+        if (selected) {
+          this.select(selected);
+          this.persist();
           this.emit();
         }
         return;
+      }
       case 'close': {
         this.overlay = null;
         const i = this.tabs.findIndex(
@@ -717,17 +760,12 @@ export class BrowserController {
         const [t] = this.tabs.splice(i, 1);
         this.window.contentView.removeChildView(t.view);
         t.view.webContents.close();
-        if (this.active === t.state.id)
-          this.active = this.tabs[Math.max(0, i - 1)]?.state.id || 0;
-        const selected = this.current();
-        if (selected?.favicons)
-          this.favicons.observe(
-            selected.view.webContents.getURL(),
-            selected.favicons,
-          );
-        this.panel = selected?.home ?? true;
+        this.select(
+          this.active === t.state.id
+            ? this.tabs[Math.max(0, i - 1)]
+            : this.current(),
+        );
         this.persist();
-        this.layout();
         this.emit();
         return;
       }

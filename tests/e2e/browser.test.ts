@@ -351,10 +351,25 @@ test('shows a centered loading indicator until navigation completes or stops', a
       if (stop) await ui.locator('#stop').click();
       else finishSlowPage?.();
       await expect.poll(indicator).toBeNull();
+      await expect(ui.locator('#message')).toBeEmpty();
     } finally {
       finishSlowPage?.();
       finishSlowPage = undefined;
     }
+  }
+});
+
+test('keeps the next page free of errors after replacing a pending navigation', async () => {
+  try {
+    await go(base + '/slow-page?replace');
+    await expect.poll(() => Boolean(finishSlowPage)).toBe(true);
+    await go(base + '/second');
+    const next = await page('/second');
+    await expect(next.locator('h1')).toHaveText('Second');
+    await expect(ui.locator('#message')).toBeEmpty();
+  } finally {
+    finishSlowPage?.();
+    finishSlowPage = undefined;
   }
 });
 

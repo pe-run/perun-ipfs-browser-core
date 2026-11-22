@@ -260,8 +260,9 @@ export class KuboEngine implements IPFSEngine {
   async json<T = Record<string, unknown>>(
     command: string,
     params: Record<string, string> = {},
+    signal?: AbortSignal,
   ): Promise<T> {
-    const stream = await this.rpc(command, params);
+    const stream = await this.rpc(command, params, signal);
     const parts: Buffer[] = [];
     for await (const chunk of stream) parts.push(Buffer.from(chunk));
     return JSON.parse(Buffer.concat(parts).toString()) as T;

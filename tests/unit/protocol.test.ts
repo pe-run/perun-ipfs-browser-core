@@ -24,3 +24,52 @@ it('recognizes the Kubo messages that mean a missing path', () => {
     expect(notFoundPattern.test(message), message).toBe(true);
   expect(notFoundPattern.test('context deadline exceeded')).toBe(false);
 });
+
+it.each(['files/stat', 'index', 'ls'])(
+  'cancels the outstanding %s request',
+  async (stage) => {
+    const controller = new AbortController();
+    const request = new Request(
+      'p2p://shared/ipfs/bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze/',
+      { signal: controller.signal },
+    );
+    const engine = {
+      async json(
+        command: string,
+        { arg }: { arg: string },
+        signal: AbortSignal,
+      ) {
+        const current = arg.endsWith('/index.html') ? 'index' : command;
+        expect(signal).toBe(request.signal);
+        if (current === stage) {
+          controller.abort();
+          signal.throwIfAborted();
+        }
+        if (current === 'index') throw Error('not found');
+        return { Type: 'directory' };
+      },
+    } as unknown as KuboEngine;
+    await expect(serveP2P(request, engine)).rejects.toMatchObject({
+      name: 'AbortError',
+    });
+  },
+);
+
+it('cancels one IPNS request while another keeps waiting for the same resolution', async () => {
+  const controller = new AbortController();
+  const url = 'p2p://shared/ipns/example.org/page.txt';
+  const resolution = Promise.withResolvers<string>();
+  const engine = {
+    resolveIPNS: () => resolution.promise,
+    json: async () => ({ Type: 'file', Size: 1 }),
+  } as unknown as KuboEngine;
+  const cancelled = serveP2P(
+    new Request(url, { signal: controller.signal }),
+    engine,
+  );
+  const remaining = serveP2P(new Request(url, { method: 'HEAD' }), engine);
+  controller.abort();
+  await expect(cancelled).rejects.toBe(controller.signal.reason);
+  resolution.resolve('/ipfs/cid');
+  expect((await remaining).status).toBe(200);
+});

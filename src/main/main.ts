@@ -95,7 +95,8 @@ app
       join(app.getPath('userData'), 'ipfs'),
       process.env.IPFS_BROWSER_OFFLINE === '1',
     );
-    installP2P(content, engine);
+    const startup = engine.start().catch((e) => console.error('Kubo:', e));
+    installP2P(content, engine, startup);
     installLocalFiles(content);
     const window = new BrowserWindow({
       width: 1250,
@@ -227,6 +228,8 @@ app
         throw Error('Invalid arguments');
       return controller!.command(c as unknown as Command);
     });
+    controller.restore();
+    void startup.then(() => controller?.emit());
     if (uiURL) await window.loadURL(uiURL);
     else await window.loadFile(uiFile);
     function updateMenu() {
@@ -295,13 +298,6 @@ app
     }
     updateMenu();
     window.setMenuBarVisibility(false);
-    void engine
-      .start()
-      .catch((e) => console.error('Kubo:', e))
-      .finally(() => {
-        controller?.restore();
-        controller?.emit();
-      });
     const timer = setInterval(() => controller?.emit(), 3000);
     window.on('closed', () => clearInterval(timer));
   })
