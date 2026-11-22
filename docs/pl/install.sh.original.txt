@@ -57,7 +57,7 @@ fi
 cd "$work/source"
 printf 'Budowanie Perun IPFS Browser (może potrwać kilka minut)…\n'
 npm ci
-npm run make -- --targets @electron-forge/maker-deb
+npm run make -- --targets deb
 shopt -s nullglob
 packages=("$work/source"/out/make/deb/x64/*.deb)
 ((${#packages[@]} == 1)) || fail 'Budowanie nie utworzyło jednoznacznego pakietu DEB.'

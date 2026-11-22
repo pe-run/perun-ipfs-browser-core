@@ -143,6 +143,7 @@ vite.config.ts.timestamp-*
 .vite/
 
 # Electron-Forge
+/.build-tmp/
 out/
 resources/kubo/ipfs
 resources/kubo/archive.tar.gz

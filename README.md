@@ -59,22 +59,10 @@ npm run make -- --targets appimage
 # Unpacked Linux application:
 ./out/ipfs-browser-linux-x64/ipfs-browser
 # Install the generated DEB (adjust the version if necessary):
-sudo apt install ./out/make/deb/x64/perun-ipfs-browser_0.17.10_amd64.deb
+sudo apt install ./out/make/deb/x64/perun-ipfs-browser_0.17.11_amd64.deb
 ```
 
 `npm run package` creates the unpacked application; `npm run make` creates DEB, RPM, AppImage and ZIP files under `out/make`. Official Kubo **0.43.1** is pinned and SHA-256 verified by `scripts/download-kubo.mjs`, including cached archives. The application never downloads Kubo at runtime. The npm lockfile records dependencies. The current Forge 8 template uses `.mts` configuration files.
-
-Every successful `npm run make` also produces a source archive under `out/make/source` and copies it and the selected binary packages into `/tmp/perun`. To generate only the source archive, run `npm run make:source`. The archive includes the npm lockfile and build configuration. It can be built without a Git checkout:
-
-```bash
-tar -xzf /tmp/perun/perun-ipfs-browser-0.17.10-source.tar.gz
-cd perun-ipfs-browser-0.17.10
-nvm use
-npm ci
-npm run package
-# Or create installers if the packaging tools below are installed:
-npm run make
-```
 
 For RPM builds, install the package providing `rpmbuild` (for example `rpm` on Ubuntu or `rpm-build` on Fedora). For AppImage builds, use the official [appimagetool](https://github.com/AppImage/appimagetool/releases) executable (tested with 1.9.1), saved as `appimagetool` on PATH. The maker can run that tool in extraction mode, so FUSE is not needed at build time.
 

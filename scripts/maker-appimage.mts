@@ -43,6 +43,7 @@ export default class MakerAppImage extends Maker<Record<string, never>> {
           'Name=Perun IPFS Browser',
           'Exec=ipfs-browser %U',
           'Icon=perun',
+          'StartupWMClass=ipfs-browser',
           'Categories=Network;WebBrowser;',
           '',
         ].join('\n'),

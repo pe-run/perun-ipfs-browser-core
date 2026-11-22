@@ -58,7 +58,7 @@ npm run make
 sudo apt install ./out/make/deb/x64/perun-ipfs-browser_0.2.0_amd64.deb
 ```
 
-`npm run package` przygotowuje katalog z aplikacją do uruchomienia i testów. Pełne `npm run make` tworzy DEB, RPM, AppImage, ZIP i archiwum źródeł w `out/make`, a po udanym budowaniu kopiuje je do `/tmp/perun`. Samo archiwum źródeł można przygotować poleceniem `npm run make:source`. Kubo i jego licencje są dołączane jako zasoby poza ASAR.
+`npm run package` przygotowuje katalog z aplikacją do uruchomienia i testów. Pełne `npm run make` tworzy DEB, RPM, AppImage i ZIP w `out/make`. Paczka DEB znajduje się w `out/make/deb/x64`. Kubo i jego licencje są dołączane jako zasoby poza ASAR.
 
 ### Sandbox na Linux
 

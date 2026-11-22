@@ -3,16 +3,16 @@ import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerDeb } from '@electron-forge/maker-deb';
 import { MakerRpm } from '@electron-forge/maker-rpm';
 import MakerAppImage from './scripts/maker-appimage.mts';
-import {
-  prefixArtifact,
-  publishLocalArtifacts,
-} from './scripts/release-artifacts.mts';
+import { prefixArtifact } from './scripts/release-artifacts.mts';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
 // The explicit staging path also works with RPM 6's per-package build directory.
-const rpmSpec = { specTemplate: 'scripts/perun-rpm.spec.ejs' };
+const rpmSpec = {
+  specTemplate: 'scripts/perun-rpm.spec.ejs',
+  desktopTemplate: 'scripts/perun.desktop.ejs',
+};
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -35,10 +35,6 @@ const config: ForgeConfig = {
           result.artifacts.map(prefixArtifact),
         );
       }
-      const archive = await publishLocalArtifacts(
-        results.flatMap(({ artifacts }) => artifacts),
-      );
-      results[0]?.artifacts.push(archive);
       return results;
     },
   },
@@ -56,6 +52,7 @@ const config: ForgeConfig = {
     new MakerDeb({
       options: {
         icon: 'resources/branding/perun.png',
+        desktopTemplate: 'scripts/perun.desktop.ejs',
         maintainer: 'Perun IPFS Browser contributors',
         homepage: 'https://github.com/pe-run/perun-ipfs-browser-core',
         categories: ['Network'],

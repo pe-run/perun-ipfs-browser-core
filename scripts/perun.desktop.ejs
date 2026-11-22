@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=<%= productName %>
+Comment=<%= description %>
+GenericName=<%= genericName %>
+Exec=<%= name %> %U
+Icon=<%= name %>
+StartupWMClass=ipfs-browser
+Terminal=false
+StartupNotify=true
+Categories=<%= categories.join(';') %>;
+<% if (mimeType && mimeType.length) { %>MimeType=<%= mimeType.join(';') %>;<% } %>

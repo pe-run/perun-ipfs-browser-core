@@ -65,7 +65,7 @@ it('clones public HTTPS without GitHub auth, builds without sudo, installs only 
       'gh auth',
     );
     expect(readFileSync(f.env.INSTALL_TEST_NPM, 'utf8')).toContain(
-      'ci\nrun make -- --targets @electron-forge/maker-deb',
+      'ci\nrun make -- --targets deb',
     );
     expect(readFileSync(f.env.INSTALL_TEST_APT, 'utf8')).toMatch(
       /^apt-get install --reinstall -- \/tmp\/perun-install\.[^\n]+\.deb\n$/,

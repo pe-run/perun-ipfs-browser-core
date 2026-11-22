@@ -1,6 +1,7 @@
 {
   "name": "ipfs-browser",
   "productName": "Perun IPFS Browser",
+  "desktopName": "ipfs-browser.desktop",
   "version": "0.17.11",
   "private": true,
   "description": "Linux browser with an embedded Kubo node",
@@ -24,8 +25,7 @@
     "build": "npm run package",
     "prepackage": "npm run kubo:download",
     "premake": "npm run kubo:download",
-    "catalog:audit": "node scripts/audit-catalog.mjs",
-    "make:source": "node scripts/release-artifacts.mts"
+    "catalog:audit": "node scripts/audit-catalog.mjs"
   },
   "devDependencies": {
     "@electron-forge/cli": "^8.0.1",
