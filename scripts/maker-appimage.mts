@@ -23,6 +23,9 @@ export default class MakerAppImage extends Maker<Record<string, never>> {
     const appDir = join(scratch, 'Perun.AppDir');
     try {
       await cp(dir, appDir, { recursive: true, verbatimSymlinks: true });
+      // The packager output is 0700; an AppImage is run by other users, and
+      // appimagetool refuses AppDirs they could not read or execute.
+      await exec('chmod', ['-R', 'a+rX', appDir]);
       // A portable mount cannot install a root-owned SUID helper.
       await rm(join(appDir, 'chrome-sandbox'), { force: true });
       await writeFile(
