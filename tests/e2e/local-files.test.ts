@@ -1,3 +1,4 @@
+import { browserUI } from './browser-ui';
 import { test, expect, _electron } from '@playwright/test';
 import { once } from 'node:events';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
@@ -46,7 +47,7 @@ test('opens local files and directories through browser chrome and blocks web pa
       },
     });
     try {
-      const ui = await app.firstWindow();
+      const ui = await browserUI(app);
       await expect(ui.locator('#node')).toContainText(/Ready|Gotowy/);
       const open = async (url: string, expectedURL = url) => {
         await ui.locator('#address').fill(url);

@@ -1,3 +1,4 @@
+import { browserUI } from './browser-ui';
 import { test, expect, _electron } from '@playwright/test';
 import type { ElectronApplication } from '@playwright/test';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
@@ -92,7 +93,7 @@ test('native IPFS and IPNS URLs work in navigation and embedded resources', asyn
         IPFS_BROWSER_OFFLINE: '1',
       },
     });
-    const ui = await app.firstWindow();
+    const ui = await browserUI(app);
     await expect(ui.locator('#node')).toContainText(/Ready|Gotowy/);
     const loaded = new Set<string>();
     app.context().on('response', (response) => {

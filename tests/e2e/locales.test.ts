@@ -1,3 +1,4 @@
+import { browserUI } from './browser-ui';
 import { parseAddress } from '../../src/shared/address';
 import { catalog } from '../../src/shared/catalog';
 import { test, expect, _electron as electron } from '@playwright/test';
@@ -22,7 +23,7 @@ test('uses the system UI language, switches all ten languages, keeps catalog pat
     });
   let app = await launch();
   try {
-    let ui = await app.firstWindow();
+    let ui = await browserUI(app);
     const languages = await app.evaluate(({ app }) =>
       app.getPreferredSystemLanguages(),
     );
@@ -100,7 +101,7 @@ test('uses the system UI language, switches all ten languages, keeps catalog pat
     await expect(ui.locator('#home')).toHaveText('Inicio');
     await app.close();
     app = await launch();
-    ui = await app.firstWindow();
+    ui = await browserUI(app);
     await expect(ui.locator('html')).toHaveAttribute('lang', 'es');
     await expect(ui.locator('#language')).toHaveValue('es');
     // Spy on loadURL only for this test so no public CID/network availability is required.

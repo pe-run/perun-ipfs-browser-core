@@ -1,3 +1,4 @@
+import { browserUI } from './browser-ui';
 import { test, expect, _electron } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { once } from 'node:events';
@@ -49,7 +50,7 @@ test('preserves the restored session when a new HTTP tab opens during Kubo start
         IPFS_BROWSER_OFFLINE: '1',
       },
     });
-    const ui = await app.firstWindow();
+    const ui = await browserUI(app);
     await ui.evaluate(
       (url) => window.browser.command({ action: 'new', url }),
       http,
@@ -104,15 +105,6 @@ test('restores 31 legacy tabs and remembers the second tab on the next launch', 
       },
     });
   let app: Awaited<ReturnType<typeof launch>> | undefined;
-  async function browserUI(application: Awaited<ReturnType<typeof launch>>) {
-    const chrome = () =>
-      application
-        .context()
-        .pages()
-        .find((page) => page.url().endsWith('/main_window/index.html'));
-    await expect.poll(chrome).toBeDefined();
-    return chrome()!;
-  }
   try {
     await writeFile(fixture, '<title>Loaded tab</title>');
     const db = new DatabaseSync(join(profile, 'browser.sqlite'));

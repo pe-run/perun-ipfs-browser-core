@@ -1,3 +1,4 @@
+import { browserUI } from './browser-ui';
 import {
   starterBookmarks,
   starterFolders,
@@ -43,7 +44,7 @@ async function start() {
       IPFS_BROWSER_OFFLINE: '1',
     },
   });
-  ui = await app.firstWindow();
+  ui = await browserUI(app);
   await ui.evaluate(() =>
     window.browser.command({ action: 'setLanguage', language: 'pl' }),
   );
@@ -1328,6 +1329,25 @@ test('shows ICO, declared PNG and SVG favicons, persists normalized icons and us
   )) as { cached: boolean; images: string[] };
   expect(cached.cached).toBe(true);
   expect(cached.images[0]).toBe(persisted);
+  // Restoration is lazy: only the selected tab gets a WebContents at startup.
+  // Reopen the background fixture, then return to the restored tab, so the
+  // background notification below comes from a live, unselected tab.
+  const restored = await ui.evaluate(
+    () =>
+      new Promise<number>((resolve) => {
+        window.browser.onState((state) => resolve(state.active));
+        void window.browser.command({ action: 'state' });
+      }),
+  );
+  await ui.evaluate(
+    (url) => window.browser.command({ action: 'new', url }),
+    base + '/favicon-background',
+  );
+  await page('/favicon-background');
+  await ui.evaluate(
+    (id) => window.browser.command({ action: 'switch', id }),
+    restored,
+  );
   await expect
     .poll(() =>
       app.evaluate(
