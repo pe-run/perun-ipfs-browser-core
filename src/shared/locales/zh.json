@@ -158,5 +158,6 @@
   "clearDataDetail": "将删除历史记录、Cookie、网站存储和缓存。书签、固定内容和 IPFS 内容将保留。",
   "cancel": "取消",
   "clearDataDone": "浏览数据已清除",
-  "nodeStarting": "IPFS 节点正在启动"
+  "nodeStarting": "IPFS 节点正在启动",
+  "moreBookmarks": "更多书签"
 }

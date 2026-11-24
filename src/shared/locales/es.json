@@ -158,5 +158,6 @@
   "clearDataDetail": "Se eliminarán el historial, las cookies, el almacenamiento de sitios y la caché. Se conservan los marcadores, los pines y el contenido IPFS.",
   "cancel": "Cancelar",
   "clearDataDone": "Datos de navegación borrados",
-  "nodeStarting": "El nodo IPFS ya se está iniciando"
+  "nodeStarting": "El nodo IPFS ya se está iniciando",
+  "moreBookmarks": "Más marcadores"
 }

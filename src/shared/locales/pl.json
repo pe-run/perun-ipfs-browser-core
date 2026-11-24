@@ -158,5 +158,6 @@
   "clearDataDetail": "Historia, ciasteczka, dane stron i pamięć podręczna zostaną usunięte. Zakładki, przypięcia i treści IPFS pozostaną.",
   "cancel": "Anuluj",
   "clearDataDone": "Dane przeglądania wyczyszczone",
-  "nodeStarting": "Węzeł IPFS już się uruchamia"
+  "nodeStarting": "Węzeł IPFS już się uruchamia",
+  "moreBookmarks": "Więcej zakładek"
 }

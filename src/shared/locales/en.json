@@ -158,5 +158,6 @@
   "clearDataDetail": "History, cookies, site storage and cache will be deleted. Bookmarks, pins and IPFS content are kept.",
   "cancel": "Cancel",
   "clearDataDone": "Browsing data cleared",
-  "nodeStarting": "The IPFS node is already starting"
+  "nodeStarting": "The IPFS node is already starting",
+  "moreBookmarks": "More bookmarks"
 }

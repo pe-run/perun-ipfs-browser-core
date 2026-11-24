@@ -188,7 +188,9 @@ app
         (['x', 'y'] as const).some(
           (key) =>
             c[key] !== undefined &&
-            (c.action !== 'openBookmarkFolder' ||
+            (!['openBookmarkFolder', 'openBookmarkOverflow'].includes(
+              String(c.action),
+            ) ||
               !Number.isSafeInteger(c[key]) ||
               Number(c[key]) < 0 ||
               Number(c[key]) > 10000),
@@ -209,7 +211,9 @@ app
               (char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127,
             ))) ||
         (c.order !== undefined &&
-          (!['updateBookmark', 'renameFolder'].includes(String(c.action)) ||
+          (!['updateBookmark', 'renameFolder', 'openBookmarkOverflow'].includes(
+            String(c.action),
+          ) ||
             !Number.isSafeInteger(c.order) ||
             Number(c.order) < 0 ||
             Number(c.order) > 50000)) ||

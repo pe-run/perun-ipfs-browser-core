@@ -158,5 +158,6 @@
   "clearDataDetail": "Verlauf, Cookies, Website-Speicher und Cache werden gelöscht. Lesezeichen, Pins und IPFS-Inhalte bleiben erhalten.",
   "cancel": "Abbrechen",
   "clearDataDone": "Browserdaten gelöscht",
-  "nodeStarting": "Der IPFS-Knoten wird bereits gestartet"
+  "nodeStarting": "Der IPFS-Knoten wird bereits gestartet",
+  "moreBookmarks": "Weitere Lesezeichen"
 }

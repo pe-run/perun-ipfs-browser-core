@@ -158,5 +158,6 @@
   "clearDataDetail": "L’historique, les cookies, le stockage des sites et le cache seront supprimés. Les favoris, les épinglages et le contenu IPFS sont conservés.",
   "cancel": "Annuler",
   "clearDataDone": "Données de navigation effacées",
-  "nodeStarting": "Le nœud IPFS est déjà en cours de démarrage"
+  "nodeStarting": "Le nœud IPFS est déjà en cours de démarrage",
+  "moreBookmarks": "Plus de favoris"
 }

@@ -219,3 +219,6 @@ The standalone forum and its site API were removed from the browser source tree.
 - **Clear browsing data** (history, cookies, site storage, cache) with native confirmation; history is capped at 10,000 visits.
 - The legacy unscoped `pin`/`unpin` commands were removed; pinning uses the page-scoped `sitePin`/`siteUnpin` commands.
 - Documentation no longer describes the withdrawn website IPFS API as present.
+- The bookmarks bar no longer scrolls; entries that do not fit open from a **»** menu.
+- Page loading is shown by the address field filling up in six-second cycles instead of a spinner over the page.
+- The new-tab **+** button sits right after the last tab.

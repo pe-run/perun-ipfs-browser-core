@@ -158,5 +158,6 @@
   "clearDataDetail": "O histórico, os cookies, o armazenamento dos sites e o cache serão excluídos. Favoritos, fixações e conteúdo IPFS são mantidos.",
   "cancel": "Cancelar",
   "clearDataDone": "Dados de navegação limpos",
-  "nodeStarting": "O nó IPFS já está iniciando"
+  "nodeStarting": "O nó IPFS já está iniciando",
+  "moreBookmarks": "Mais favoritos"
 }

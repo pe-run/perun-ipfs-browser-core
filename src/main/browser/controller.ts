@@ -4,10 +4,6 @@ import {
   readLimitedFile,
   SourceTooLargeError,
 } from './page-source';
-import {
-  createLoadingIndicator,
-  loadingIndicatorSize,
-} from './loading-indicator';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { copyFile, rename, rm } from 'node:fs/promises';
@@ -35,6 +31,7 @@ import type { Session } from 'electron';
 import { requestRedirect } from '../ipfs/request-address';
 import { navigationAddress, parseAddress } from '../../shared/address';
 import type {
+  Bookmark,
   BrowserState,
   Command,
   TabState,
@@ -54,8 +51,6 @@ type Tab = {
   home: boolean;
   favicons?: string[];
   navigationURL?: string;
-  /** True until the navigation commits; afterwards the page itself is visible and must stay clickable. */
-  awaitingContent?: boolean;
 };
 type SavedTab = Pick<Tab, 'state' | 'home'> & { view?: undefined };
 /** Input that grants a page one popup, like Chromium's transient user activation. */
@@ -84,7 +79,6 @@ export class BrowserController {
   private toolbarHeight = 112;
   private bookmarkMenu?: Menu;
   private favicons: Favicons;
-  private loadingIndicator?: WebContentsView;
   private overlay: BrowserState['overlay'] = null;
   private importing = false;
   private pendingImport?: { result: ImportResult; pinRecorded: boolean };
@@ -99,10 +93,6 @@ export class BrowserController {
     private onLanguageChanged: () => void,
   ) {
     this.favicons = new Favicons(session, store);
-    window.once('closed', () => {
-      const contents = this.loadingIndicator?.webContents;
-      if (contents && !contents.isDestroyed()) contents.close();
-    });
     const saved = this.store.get<unknown>('language', 'auto');
     this.languagePreference = isLanguage(saved) ? saved : 'auto';
     setLocale(
@@ -230,14 +220,6 @@ export class BrowserController {
   /** Send the state to the interface; unchanged state is skipped unless forced. */
   emit(force = false) {
     if (this.window.isDestroyed()) return;
-    const loading =
-      !this.panel && !this.overlay && !!this.current()?.awaitingContent;
-    if (loading && !this.loadingIndicator) {
-      this.loadingIndicator = createLoadingIndicator();
-      this.window.contentView.addChildView(this.loadingIndicator);
-      this.positionLoadingIndicator();
-    }
-    this.loadingIndicator?.setVisible(loading);
     const state: BrowserState = {
       version: app.getVersion(),
       faviconSources: this.favicons.sources,
@@ -267,21 +249,8 @@ export class BrowserController {
     if (state === 'crashed') return t('nodeCrash', { error: detail });
     return t(state);
   }
-  private positionLoadingIndicator() {
-    const [width, height] = this.window.getContentSize();
-    const size = loadingIndicatorSize;
-    this.loadingIndicator?.setBounds({
-      x: Math.max(0, Math.floor((width - size) / 2)),
-      y:
-        this.toolbarHeight +
-        Math.max(0, Math.floor((height - this.toolbarHeight - size) / 2)),
-      width: size,
-      height: size,
-    });
-  }
   private layout() {
     this.previewLink('');
-    this.positionLoadingIndicator();
     const [width, height] = this.window.getContentSize();
     for (const t of this.tabs) {
       if (!t.view) continue;
@@ -330,8 +299,6 @@ export class BrowserController {
       },
     };
     this.window.contentView.addChildView(view);
-    if (this.loadingIndicator)
-      this.window.contentView.addChildView(this.loadingIndicator);
     // Electron has no popup blocker: without this, a script could open tabs in a loop.
     let activation = 0;
     wc.on('input-event', (_event, input) => {
@@ -442,13 +409,11 @@ export class BrowserController {
     wc.on('did-start-loading', () => {
       if (this.active === wc.id && !this.panel) this.previewLink('');
       tab.state.loading = true;
-      tab.awaitingContent = true;
       tab.state.error = undefined;
       this.emit();
     });
     wc.on('did-stop-loading', () => {
       tab.state.loading = false;
-      tab.awaitingContent = false;
       this.update(tab);
     });
     wc.on('did-navigate', () => {
@@ -456,7 +421,6 @@ export class BrowserController {
       activation = 0;
       tab.navigationURL = undefined;
       tab.state.error = undefined;
-      tab.awaitingContent = false;
       this.update(tab);
       this.applySitePreferences(tab);
       if (this.overlay === 'site' && this.active === tab.state.id) {
@@ -482,13 +446,11 @@ export class BrowserController {
       if (isMain && code !== -3 && url === tab.navigationURL) {
         tab.state.error = t('navigationFailed', { code, error: description });
         tab.state.loading = false;
-        tab.awaitingContent = false;
         this.emit();
       }
     });
     wc.on('render-process-gone', (_event, details) => {
       tab.state.loading = false;
-      tab.awaitingContent = false;
       tab.state.error = t('rendererGone', { error: details.reason });
       this.emit();
     });
@@ -532,6 +494,87 @@ export class BrowserController {
     if (!tab || command.id !== tab.state.id || command.url !== tab.state.url)
       throw Error(t('pageChanged'));
     return tab;
+  }
+  private validateMenuPosition(command: Command) {
+    if (
+      this.overlay ||
+      command.x === undefined ||
+      command.y === undefined ||
+      !Number.isSafeInteger(command.x) ||
+      !Number.isSafeInteger(command.y) ||
+      command.x < 0 ||
+      command.y < 0
+    )
+      throw Error('Invalid menu position');
+    const [width, height] = this.window.getContentSize();
+    if (
+      command.x >= width ||
+      command.y > this.toolbarHeight ||
+      command.y >= height
+    )
+      throw Error('Invalid menu position');
+  }
+  private bookmarkMenuItem(
+    bookmark: Bookmark,
+    stillListed: (current: Bookmark) => boolean,
+  ): Electron.MenuItemConstructorOptions {
+    return {
+      label: (bookmark.title || bookmark.url).replace(/&/g, '&&'),
+      icon:
+        this.favicons.icon(bookmark.url) ||
+        nativeImage.createFromPath(
+          join(
+            app.isPackaged
+              ? join(process.resourcesPath, 'branding')
+              : join(app.getAppPath(), 'resources/branding'),
+            `site-${bookmark.url.startsWith('ipfs:') || bookmark.url.startsWith('ipns:') || bookmark.url.startsWith('p2p:') ? 'ipfs' : 'web'}.png`,
+          ),
+        ),
+      click: (_item, _window, event) => {
+        // The menu may outlive an edit made in the meantime.
+        if (
+          !this.store
+            .bookmarks()
+            .some(
+              (current) => current.url === bookmark.url && stillListed(current),
+            )
+        )
+          return;
+        void this.command({
+          action: event.ctrlKey || event.metaKey ? 'new' : 'navigate',
+          url: bookmark.url,
+        }).catch((error) => {
+          const current = this.current();
+          if (current)
+            current.state.error = localizeMessage((error as Error).message);
+          this.emit();
+        });
+      },
+    };
+  }
+  private folderMenuItems(id: number): Electron.MenuItemConstructorOptions[] {
+    const inFolder = (bookmark: Bookmark) =>
+      bookmark.folderId === id || bookmark.shortcutFolderId === id;
+    const entries = this.store.bookmarks().filter(inFolder);
+    return entries.length
+      ? entries.map((bookmark) => this.bookmarkMenuItem(bookmark, inFolder))
+      : [{ label: t('emptyFolder'), enabled: false }];
+  }
+  private popupBookmarkMenu(
+    items: Electron.MenuItemConstructorOptions[],
+    position: Command,
+  ) {
+    this.bookmarkMenu?.closePopup(this.window);
+    const menu = Menu.buildFromTemplate(items);
+    this.bookmarkMenu = menu;
+    menu.popup({
+      window: this.window,
+      x: position.x,
+      y: position.y,
+      callback: () => {
+        if (this.bookmarkMenu === menu) this.bookmarkMenu = undefined;
+      },
+    });
   }
   private applySitePreferences(tab: Tab) {
     if (!tab.state.url || tab.view.webContents.isDestroyed()) return;
@@ -599,81 +642,36 @@ export class BrowserController {
           !this.store.folders().some((folder) => folder.id === command.id)
         )
           throw Error('Folder not found');
+        this.validateMenuPosition(command);
+        this.popupBookmarkMenu(this.folderMenuItems(command.id), command);
+        return;
+      }
+      case 'openBookmarkOverflow': {
+        // The bar shows root bookmarks, then folders; `order` is how many fit.
+        this.validateMenuPosition(command);
+        const items: Electron.MenuItemConstructorOptions[] = [
+          ...this.store
+            .bookmarks()
+            .filter((bookmark) => bookmark.folderId === null)
+            .map((bookmark) =>
+              this.bookmarkMenuItem(
+                bookmark,
+                (current) => current.folderId === null,
+              ),
+            ),
+          ...this.store.folders().map((folder) => ({
+            label: folder.title.replace(/&/g, '&&'),
+            submenu: this.folderMenuItems(folder.id),
+          })),
+        ];
         if (
-          this.overlay ||
-          command.x === undefined ||
-          command.y === undefined ||
-          !Number.isSafeInteger(command.x) ||
-          !Number.isSafeInteger(command.y) ||
-          command.x < 0 ||
-          command.y < 0
+          command.order === undefined ||
+          !Number.isSafeInteger(command.order) ||
+          command.order < 0 ||
+          command.order >= items.length
         )
-          throw Error('Invalid menu position');
-        const [width, height] = this.window.getContentSize();
-        if (
-          command.x >= width ||
-          command.y > this.toolbarHeight ||
-          command.y >= height
-        )
-          throw Error('Invalid menu position');
-        this.bookmarkMenu?.closePopup(this.window);
-        const entries = this.store
-          .bookmarks()
-          .filter(
-            (bookmark) =>
-              bookmark.folderId === command.id ||
-              bookmark.shortcutFolderId === command.id,
-          );
-        const menu = Menu.buildFromTemplate(
-          entries.length
-            ? entries.map((bookmark) => ({
-                label: (bookmark.title || bookmark.url).replace(/&/g, '&&'),
-                icon:
-                  this.favicons.icon(bookmark.url) ||
-                  nativeImage.createFromPath(
-                    join(
-                      app.isPackaged
-                        ? join(process.resourcesPath, 'branding')
-                        : join(app.getAppPath(), 'resources/branding'),
-                      `site-${bookmark.url.startsWith('ipfs:') || bookmark.url.startsWith('ipns:') || bookmark.url.startsWith('p2p:') ? 'ipfs' : 'web'}.png`,
-                    ),
-                  ),
-                click: (_item, _window, event) => {
-                  if (
-                    !this.store
-                      .bookmarks()
-                      .some(
-                        (current) =>
-                          current.url === bookmark.url &&
-                          (current.folderId === command.id ||
-                            current.shortcutFolderId === command.id),
-                      )
-                  )
-                    return;
-                  void this.command({
-                    action: event.ctrlKey || event.metaKey ? 'new' : 'navigate',
-                    url: bookmark.url,
-                  }).catch((error) => {
-                    const current = this.current();
-                    if (current)
-                      current.state.error = localizeMessage(
-                        (error as Error).message,
-                      );
-                    this.emit();
-                  });
-                },
-              }))
-            : [{ label: t('emptyFolder'), enabled: false }],
-        );
-        this.bookmarkMenu = menu;
-        menu.popup({
-          window: this.window,
-          x: command.x,
-          y: command.y,
-          callback: () => {
-            if (this.bookmarkMenu === menu) this.bookmarkMenu = undefined;
-          },
-        });
+          throw Error('Invalid overflow position');
+        this.popupBookmarkMenu(items.slice(command.order), command);
         return;
       }
       case 'showBookmarks':

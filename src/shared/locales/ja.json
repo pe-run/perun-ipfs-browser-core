@@ -158,5 +158,6 @@
   "clearDataDetail": "履歴、Cookie、サイトのストレージ、キャッシュが削除されます。ブックマーク、ピン、IPFS コンテンツは保持されます。",
   "cancel": "キャンセル",
   "clearDataDone": "閲覧データを消去しました",
-  "nodeStarting": "IPFS ノードはすでに起動中です"
+  "nodeStarting": "IPFS ノードはすでに起動中です",
+  "moreBookmarks": "その他のブックマーク"
 }

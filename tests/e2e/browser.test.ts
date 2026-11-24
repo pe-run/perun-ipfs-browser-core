@@ -371,43 +371,117 @@ test('clears history, cookies and site storage after confirmation', async () => 
   expect(await p.evaluate(() => localStorage.getItem('fixture'))).toBeNull();
   await ui.locator('#settings-dialog [data-dismiss]').click();
 });
-test('shows a centered loading indicator until navigation completes or stops', async () => {
-  const indicator = () =>
-    app.evaluate(({ BrowserWindow, WebContentsView }) => {
-      const views = BrowserWindow.getAllWindows()[0].contentView.children;
-      // Identify views by role rather than by their position in the stack.
-      const spinner = views.find(
-        (view): view is InstanceType<typeof WebContentsView> =>
-          view instanceof WebContentsView &&
-          view.webContents.getURL().startsWith('data:text/html'),
-      );
-      const page = views.find(
-        (view) =>
-          view !== spinner &&
-          view instanceof WebContentsView &&
-          view.getVisible(),
-      );
-      if (!spinner?.getVisible() || !page) return null;
-      const tab = page.getBounds();
-      const bounds = spinner.getBounds();
-      return {
-        x: bounds.x - tab.x - Math.floor((tab.width - bounds.width) / 2),
-        y: bounds.y - tab.y - Math.floor((tab.height - bounds.height) / 2),
-      };
-    });
+test('fills the address field as a progress bar until navigation completes or stops', async () => {
+  const address = ui.locator('#address');
   for (const stop of [false, true]) {
     try {
       await go(base + '/slow-page?stop=' + stop);
       await expect.poll(() => Boolean(finishSlowPage)).toBe(true);
-      await expect.poll(indicator).toEqual({ x: 0, y: 0 });
+      await expect(address).toHaveClass(/\bloading\b/);
+      await expect(address).toHaveAttribute('aria-busy', 'true');
+      // Duration is unknown, so the fill repeats in six-second cycles.
+      await expect(address).toHaveCSS('animation-duration', '6s');
+      await expect(address).toHaveCSS('animation-iteration-count', 'infinite');
       if (stop) await ui.locator('#stop').click();
       else finishSlowPage?.();
-      await expect.poll(indicator).toBeNull();
+      await expect(address).not.toHaveClass(/\bloading\b/);
+      await expect(address).toHaveAttribute('aria-busy', 'false');
       await expect(ui.locator('#message')).toBeEmpty();
     } finally {
       finishSlowPage?.();
       finishSlowPage = undefined;
     }
+  }
+});
+
+test('keeps the new-tab button after the last tab and folds bookmarks that do not fit', async () => {
+  await go(base);
+  const bar = ui.locator('#bookmarks-bar'),
+    more = ui.locator('#bookmarks-overflow');
+  const plusGap = () =>
+    ui.evaluate(() => {
+      const tabs = document.querySelectorAll('.tab');
+      const last = tabs[tabs.length - 1].getBoundingClientRect();
+      return (
+        document.getElementById('new')!.getBoundingClientRect().left -
+        last.right
+      );
+    });
+  expect(await plusGap()).toBeGreaterThanOrEqual(0);
+  expect(await plusGap()).toBeLessThan(16);
+  await expect(bar).toHaveCSS('overflow-x', 'hidden');
+  const resize = (width: number) =>
+    app.evaluate(
+      ({ BrowserWindow }, width) =>
+        BrowserWindow.getAllWindows()[0].setSize(width, 850),
+      width,
+    );
+  await resize(800);
+  try {
+    await expect(more).toBeVisible();
+    const hidden = await bar.evaluate((element) =>
+      Array.from(
+        element.querySelectorAll<HTMLElement>(
+          ':scope > a[hidden], :scope > [data-folder-id][hidden]',
+        ),
+      ).map((entry) => entry.textContent!.replace(/^📁 /, '').trim()),
+    );
+    expect(hidden.length).toBeGreaterThan(0);
+    // Nothing is cut off or scrolled: visible entries end before the » button.
+    expect(
+      await bar.evaluate((element) => {
+        const limit = document
+          .getElementById('bookmarks-overflow')!
+          .getBoundingClientRect().left;
+        return Array.from(
+          element.querySelectorAll<HTMLElement>(
+            ':scope > a:not([hidden]), :scope > [data-folder-id]:not([hidden])',
+          ),
+        ).every((entry) => entry.getBoundingClientRect().right <= limit);
+      }),
+    ).toBe(true);
+    await app.evaluate(({ Menu }) => {
+      const scope = globalThis as unknown as {
+        overflowLabels?: string[];
+        originalPopup?: typeof Menu.prototype.popup;
+      };
+      scope.originalPopup = Menu.prototype.popup;
+      Menu.prototype.popup = function () {
+        scope.overflowLabels = this.items.map((item) =>
+          item.label.replace(/&&/g, '&'),
+        );
+      };
+    });
+    await more.click();
+    await expect
+      .poll(() =>
+        app.evaluate(
+          () =>
+            (globalThis as unknown as { overflowLabels?: string[] })
+              .overflowLabels,
+        ),
+      )
+      .toEqual(hidden);
+    // A wider window shows more entries and folds fewer of them.
+    await resize(1250);
+    await expect
+      .poll(() =>
+        bar.evaluate(
+          (element) =>
+            element.querySelectorAll(
+              ':scope > a[hidden], :scope > [data-folder-id][hidden]',
+            ).length,
+        ),
+      )
+      .toBeLessThan(hidden.length);
+  } finally {
+    await app.evaluate(({ Menu }) => {
+      const scope = globalThis as unknown as {
+        originalPopup?: typeof Menu.prototype.popup;
+      };
+      if (scope.originalPopup) Menu.prototype.popup = scope.originalPopup;
+    });
+    await resize(1250);
   }
 });
 
@@ -425,29 +499,34 @@ test('keeps the next page free of errors after replacing a pending navigation', 
   }
 });
 
-test('hides the loading indicator once the page commits, so it cannot cover content', async () => {
+test('keeps a committed page uncovered while it is still loading', async () => {
   try {
     await go(base + '/slow-body?commit');
     await expect.poll(() => Boolean(finishSlowPage)).toBe(true);
-    // Committed but still loading: the spinner must be gone.
+    await expect(ui.locator('#address')).toHaveClass(/\bloading\b/);
+    // Progress lives in the toolbar; no extra view may sit above the page.
     await expect
       .poll(() =>
         app.evaluate(({ BrowserWindow, WebContentsView }) =>
-          BrowserWindow.getAllWindows()[0].contentView.children.some(
-            (view) =>
-              view instanceof WebContentsView &&
-              view.getVisible() &&
-              view.webContents.getURL().startsWith('data:text/html'),
-          ),
+          BrowserWindow.getAllWindows()[0]
+            .contentView.children.filter(
+              (view) => view instanceof WebContentsView && view.getVisible(),
+            )
+            .map((view) =>
+              (
+                view as InstanceType<typeof WebContentsView>
+              ).webContents.getURL(),
+            ),
         ),
       )
-      .toBe(false);
+      .toEqual([base + '/slow-body?commit']);
     await expect(ui.locator('#stop')).toBeVisible();
   } finally {
     finishSlowPage?.();
     finishSlowPage = undefined;
   }
 });
+
 test('HTTPS certificate validation stays enabled; trusted local fixture loads', async () => {
   await go(secureBase);
   await expect(ui.locator('#message')).toContainText(
@@ -1133,134 +1212,150 @@ x.XCloseDisplay(d)
 }
 
 test('folder menus list bookmarks, navigate with native keyboard input and keep management separate', async () => {
-  const first = base + '/folder-first',
-    second = base + '/folder-second';
-  for (const url of [second, first]) {
-    await go(url);
-    await page(url);
-    await ui.locator('#bookmark').click();
-  }
-  await ui.locator('#manage-bookmarks').click();
-  await ui.locator('#new-folder-title').fill('Quick links');
-  await ui.locator('#bookmark-new-folder button').click();
-  const id = await ui
-    .locator('#bookmark-folder-filter option')
-    .filter({ hasText: 'Quick links' })
-    .getAttribute('value');
-  for (const [url, title] of [
-    // Each bookmark moved into a folder goes first, so move B before A.
-    [second, 'B second'],
-    [first, 'A first'],
-  ]) {
-    const row = ui
-      .locator('#bookmark-manager-list form')
-      .filter({ has: ui.locator(`a[href="${url}"]`) });
-    await row.locator('input:not(.bookmark-position)').fill(title);
-    await row.locator('select').selectOption(id!);
-    await row.getByRole('button', { name: 'Zapisz', exact: true }).click();
-    await expect(row.locator('a')).toHaveText(title);
-  }
-  await ui.locator('#new-folder-title').fill('Empty');
-  await ui.locator('#bookmark-new-folder button').click();
-  const empty = await ui
-    .locator('#bookmark-folder-filter option')
-    .filter({ hasText: 'Empty' })
-    .getAttribute('value');
-  await ui.locator('#bookmarks-dialog [data-dismiss]').click();
-  await app.evaluate(({ Menu, BrowserWindow }) => {
-    const original = Menu.prototype.popup;
-    Menu.prototype.popup = function (options) {
-      const state = globalThis as unknown as {
-        folderMenu: Electron.Menu;
-        menuClosed: boolean;
-      };
-      state.folderMenu = this;
-      state.menuClosed = false;
-      this.once('menu-will-close', () => {
-        state.menuClosed = true;
-      });
-      original.call(this, options);
-    };
-    BrowserWindow.getAllWindows()[0].focus();
-  });
-  const folder = ui.locator(`#bookmarks-bar button[data-folder-id="${id}"]`);
-  const items = () =>
-    app.evaluate(() =>
-      (
-        globalThis as unknown as { folderMenu: Electron.Menu }
-      ).folderMenu?.items.map((item) => ({
-        label: item.label,
-        enabled: item.enabled,
-      })),
-    );
-  const closed = () =>
+  // New folders go last; keep them on the bar instead of in the » overflow menu.
+  const resize = (width: number) =>
     app.evaluate(
-      () => (globalThis as unknown as { menuClosed: boolean }).menuClosed,
+      ({ BrowserWindow }, width) =>
+        BrowserWindow.getAllWindows()[0].setSize(width, 850),
+      width,
     );
-  await go(second);
-  await page(second);
-  await folder.click();
-  await expect
-    .poll(() =>
+  await resize(2400);
+  try {
+    const first = base + '/folder-first',
+      second = base + '/folder-second';
+    for (const url of [second, first]) {
+      await go(url);
+      await page(url);
+      await ui.locator('#bookmark').click();
+    }
+    await ui.locator('#manage-bookmarks').click();
+    await ui.locator('#new-folder-title').fill('Quick links');
+    await ui.locator('#bookmark-new-folder button').click();
+    const id = await ui
+      .locator('#bookmark-folder-filter option')
+      .filter({ hasText: 'Quick links' })
+      .getAttribute('value');
+    for (const [url, title] of [
+      // Each bookmark moved into a folder goes first, so move B before A.
+      [second, 'B second'],
+      [first, 'A first'],
+    ]) {
+      const row = ui
+        .locator('#bookmark-manager-list form')
+        .filter({ has: ui.locator(`a[href="${url}"]`) });
+      await row.locator('input:not(.bookmark-position)').fill(title);
+      await row.locator('select').selectOption(id!);
+      await row.getByRole('button', { name: 'Zapisz', exact: true }).click();
+      await expect(row.locator('a')).toHaveText(title);
+    }
+    await ui.locator('#new-folder-title').fill('Empty');
+    await ui.locator('#bookmark-new-folder button').click();
+    const empty = await ui
+      .locator('#bookmark-folder-filter option')
+      .filter({ hasText: 'Empty' })
+      .getAttribute('value');
+    await ui.locator('#bookmarks-dialog [data-dismiss]').click();
+    await app.evaluate(({ Menu, BrowserWindow }) => {
+      const original = Menu.prototype.popup;
+      Menu.prototype.popup = function (options) {
+        const state = globalThis as unknown as {
+          folderMenu: Electron.Menu;
+          menuClosed: boolean;
+        };
+        state.folderMenu = this;
+        state.menuClosed = false;
+        this.once('menu-will-close', () => {
+          state.menuClosed = true;
+        });
+        original.call(this, options);
+      };
+      BrowserWindow.getAllWindows()[0].focus();
+    });
+    const folder = ui.locator(`#bookmarks-bar button[data-folder-id="${id}"]`);
+    const items = () =>
       app.evaluate(() =>
         (
           globalThis as unknown as { folderMenu: Electron.Menu }
-        ).folderMenu?.items.every(
-          (item) =>
-            item.icon && typeof item.icon !== 'string' && !item.icon.isEmpty(),
+        ).folderMenu?.items.map((item) => ({
+          label: item.label,
+          enabled: item.enabled,
+        })),
+      );
+    const closed = () =>
+      app.evaluate(
+        () => (globalThis as unknown as { menuClosed: boolean }).menuClosed,
+      );
+    await go(second);
+    await page(second);
+    await folder.click();
+    await expect
+      .poll(() =>
+        app.evaluate(() =>
+          (
+            globalThis as unknown as { folderMenu: Electron.Menu }
+          ).folderMenu?.items.every(
+            (item) =>
+              item.icon &&
+              typeof item.icon !== 'string' &&
+              !item.icon.isEmpty(),
+          ),
         ),
+      )
+      .toBe(true);
+    await expect.poll(items).toEqual([
+      { label: 'A first', enabled: true },
+      { label: 'B second', enabled: true },
+    ]);
+    await expect(ui.locator('#bookmarks-dialog')).not.toBeVisible();
+    await expect(ui.locator('#address')).toHaveValue(second);
+    nativeMenuKeys([0xff54, 0xff0d]);
+    await expect(ui.locator('#address')).toHaveValue(first);
+    await page(first);
+    await expect.poll(closed).toBe(true);
+    const count = await ui.locator('.tab').count();
+    await folder.focus();
+    await ui.keyboard.press('ArrowDown');
+    await expect.poll(closed).toBe(false);
+    nativeMenuKeys([0xff54, 0xff0d], true);
+    await expect(ui.locator('.tab')).toHaveCount(count + 1);
+    await expect(ui.locator('#address')).toHaveValue(first);
+    await page(first);
+    await ui
+      .locator(`#bookmarks-bar button[data-folder-id="${empty}"]`)
+      .click();
+    await expect
+      .poll(items)
+      .toEqual([{ label: 'Ten katalog jest pusty.', enabled: false }]);
+    nativeMenuKeys([0xff1b]);
+    await expect.poll(closed).toBe(true);
+    await expect(ui.locator('#address')).toHaveValue(first);
+    await expect(ui.locator('#bookmarks-dialog')).not.toBeVisible();
+    await expect(
+      ui.evaluate(() =>
+        window.browser.command({
+          action: 'openBookmarkFolder',
+          id: 999999,
+          x: 0,
+          y: 0,
+        }),
       ),
-    )
-    .toBe(true);
-  await expect.poll(items).toEqual([
-    { label: 'A first', enabled: true },
-    { label: 'B second', enabled: true },
-  ]);
-  await expect(ui.locator('#bookmarks-dialog')).not.toBeVisible();
-  await expect(ui.locator('#address')).toHaveValue(second);
-  nativeMenuKeys([0xff54, 0xff0d]);
-  await expect(ui.locator('#address')).toHaveValue(first);
-  await page(first);
-  await expect.poll(closed).toBe(true);
-  const count = await ui.locator('.tab').count();
-  await folder.focus();
-  await ui.keyboard.press('ArrowDown');
-  await expect.poll(closed).toBe(false);
-  nativeMenuKeys([0xff54, 0xff0d], true);
-  await expect(ui.locator('.tab')).toHaveCount(count + 1);
-  await expect(ui.locator('#address')).toHaveValue(first);
-  await page(first);
-  await ui.locator(`#bookmarks-bar button[data-folder-id="${empty}"]`).click();
-  await expect
-    .poll(items)
-    .toEqual([{ label: 'Ten katalog jest pusty.', enabled: false }]);
-  nativeMenuKeys([0xff1b]);
-  await expect.poll(closed).toBe(true);
-  await expect(ui.locator('#address')).toHaveValue(first);
-  await expect(ui.locator('#bookmarks-dialog')).not.toBeVisible();
-  await expect(
-    ui.evaluate(() =>
-      window.browser.command({
-        action: 'openBookmarkFolder',
-        id: 999999,
-        x: 0,
-        y: 0,
-      }),
-    ),
-  ).rejects.toThrow();
-  await expect(
-    ui.evaluate(() =>
-      window.browser.command({
-        action: 'openBookmarkFolder',
-        id: Number(id),
-        x: -1,
-        y: 0,
-      }),
-    ),
-  ).rejects.toThrow();
-  await ui.locator('#manage-bookmarks').click();
-  await expect(ui.locator('#bookmarks-dialog')).toBeVisible();
-  await ui.locator('#bookmarks-dialog [data-dismiss]').click();
+    ).rejects.toThrow();
+    await expect(
+      ui.evaluate(() =>
+        window.browser.command({
+          action: 'openBookmarkFolder',
+          id: Number(id),
+          x: -1,
+          y: 0,
+        }),
+      ),
+    ).rejects.toThrow();
+    await ui.locator('#manage-bookmarks').click();
+    await expect(ui.locator('#bookmarks-dialog')).toBeVisible();
+    await ui.locator('#bookmarks-dialog [data-dismiss]').click();
+  } finally {
+    await resize(1250);
+  }
 });
 
 test('shows ICO, declared PNG and SVG favicons, persists normalized icons and uses a shared IPFS/IPNS default', async () => {

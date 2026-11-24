@@ -218,9 +218,50 @@ function renderBookmarks() {
     entry.dataset.folderId = String(folder.id);
     bar.append(entry);
   }
+  const more = button(
+    '»',
+    () => {
+      const bounds = more.getBoundingClientRect();
+      void command({
+        action: 'openBookmarkOverflow',
+        order: visibleBarEntries,
+        x: Math.max(0, Math.floor(bounds.left)),
+        y: Math.ceil(bounds.bottom),
+      });
+    },
+    t('moreBookmarks'),
+  );
+  more.id = 'bookmarks-overflow';
+  more.setAttribute('aria-label', t('moreBookmarks'));
+  more.setAttribute('aria-haspopup', 'menu');
+  bar.append(more);
+  fitBookmarksBar();
   updateBookmarkStar();
   renderBookmarkManager();
 }
+/** Number of bar entries (root bookmarks, then folders) currently shown. */
+let visibleBarEntries = 0;
+/** Hide entries that do not fit; the » button lists them in a native menu. */
+function fitBookmarksBar() {
+  const bar = $('bookmarks-bar'),
+    more = document.getElementById('bookmarks-overflow');
+  if (!more) return;
+  const entries = Array.from(
+    bar.querySelectorAll<HTMLElement>(':scope > a, :scope > [data-folder-id]'),
+  );
+  for (const entry of entries) entry.hidden = false;
+  more.hidden = true;
+  visibleBarEntries = entries.length;
+  if (bar.scrollWidth <= bar.clientWidth) return;
+  more.hidden = false;
+  const limit = bar.clientWidth - more.offsetWidth - 6;
+  const first = entries.findIndex(
+    (entry) => entry.offsetLeft + entry.offsetWidth > limit,
+  );
+  visibleBarEntries = first < 0 ? entries.length : first;
+  for (const entry of entries.slice(visibleBarEntries)) entry.hidden = true;
+}
+new ResizeObserver(() => fitBookmarksBar()).observe($('bookmarks-bar'));
 async function refreshBookmarks() {
   try {
     [bookmarks, folders] = (await Promise.all([
@@ -688,6 +729,9 @@ function renderState(s: BrowserState) {
     input = $<HTMLInputElement>('address'),
     url = tab?.url || '';
   if (!editingAddress || url !== lastAddress) input.value = url;
+  // The address background doubles as an (indeterminate) progress bar.
+  input.classList.toggle('loading', !!tab?.loading);
+  input.setAttribute('aria-busy', String(!!tab?.loading));
   lastAddress = url;
   $<HTMLButtonElement>('back').disabled = !tab?.back;
   $<HTMLButtonElement>('forward').disabled = !tab?.forward;

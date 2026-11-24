@@ -31,11 +31,16 @@ button:disabled {
   opacity: 0.4;
   cursor: default;
 }
+/* Shrink to the tabs, so the new-tab button follows the last tab. */
 #tabs {
   display: flex;
   gap: 4px;
   overflow: auto;
-  flex: 1;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+#new {
+  flex: none;
 }
 .tab {
   display: flex;
@@ -260,13 +265,19 @@ form {
 }
 
 #bookmarks-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
   height: 30px;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
   white-space: nowrap;
+}
+#bookmarks-bar [hidden] {
+  display: none;
+}
+#bookmarks-overflow {
+  margin-left: auto;
 }
 #bookmarks-bar a {
   flex: 0 0 auto;
@@ -362,4 +373,23 @@ form {
 #bookmark-folder-edit input.bookmark-position {
   flex: 0 0 5em;
   width: 5em;
+}
+
+/* Indeterminate progress: the field fills from left to right in 6 s cycles. */
+#address.loading {
+  background-image: linear-gradient(#2f4a6a, #2f4a6a);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  animation: address-progress 6s linear infinite;
+}
+@keyframes address-progress {
+  to {
+    background-size: 100% 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #address.loading {
+    animation: none;
+    background-size: 100% 100%;
+  }
 }
