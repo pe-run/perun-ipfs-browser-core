@@ -210,7 +210,7 @@ IPNS and internal p2p:// addresses use the same turquoise cube as IPFS in tabs, 
 
 The standalone forum and its site API were removed from the browser source tree. Existing browser profiles and Kubo repositories are retained.
 
-## Unreleased — robustness and privacy fixes
+## 0.18.0 — robustness, privacy and toolbar fixes
 
 - Script-driven popups are blocked: a tab may open one popup per recent click or key press.
 - Downloads no longer freeze the main process: the save dialog is asynchronous and the file is moved from a profile temporary file after the choice.
@@ -222,3 +222,5 @@ The standalone forum and its site API were removed from the browser source tree.
 - The bookmarks bar no longer scrolls; entries that do not fit open from a **»** menu.
 - Page loading is shown by the address field filling up in six-second cycles instead of a spinner over the page.
 - The new-tab **+** button sits right after the last tab.
+
+0.18.0 validation: typecheck/lint, 76 unit tests, 12 real-Kubo integration tests and 23 Playwright scenarios pass on Node 24. Linux DEB and ZIP were built; the packaged-app smoke test, RPM and AppImage were not run in this environment (no root-owned SUID sandbox helper, rpmbuild or appimagetool).

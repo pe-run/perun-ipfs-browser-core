@@ -2,7 +2,7 @@
   "name": "ipfs-browser",
   "productName": "Perun IPFS Browser",
   "desktopName": "ipfs-browser.desktop",
-  "version": "0.17.12",
+  "version": "0.18.0",
   "private": true,
   "description": "Linux browser with an embedded Kubo node",
   "keywords": [],
