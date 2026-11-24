@@ -1,5 +1,5 @@
 import { prepareProfile } from './storage/profile';
-import { t, isLanguage } from '../shared/i18n';
+import { t } from '../shared/i18n';
 import {
   app,
   BrowserWindow,
@@ -16,7 +16,7 @@ import { KuboEngine } from './ipfs/engine';
 import { installP2P } from './ipfs/protocol';
 import { installLocalFiles } from './files/protocol';
 import { securePreferences, secureSession } from './security/policy';
-import type { Command } from '../shared/types';
+import { parseCommand } from './security/commands';
 protocol.registerSchemesAsPrivileged([
   ...['ipfs', 'ipns'].map((scheme) => ({
     scheme,
@@ -92,6 +92,8 @@ app.on('window-all-closed', () => app.quit());
 app
   .whenReady()
   .then(async () => {
+    // Quitting before readiness: do not start Kubo or open a window.
+    if (quitting) return;
     if (profileError) throw profileError;
     store = new Store(join(paths.profile, 'browser.sqlite'), paths.bookmarks);
     const content = session.fromPartition('persist:browsing');
@@ -153,93 +155,7 @@ app
         event.senderFrame.url !== trustedURL
       )
         throw Error('Unauthorized sender');
-      if (!raw || typeof raw !== 'object' || Array.isArray(raw))
-        throw Error('Invalid command');
-      const c = raw as Record<string, unknown>;
-      if (
-        Object.keys(c).some(
-          (k) =>
-            ![
-              'action',
-              'url',
-              'id',
-              'language',
-              'zoom',
-              'muted',
-              'title',
-              'folderId',
-              'height',
-              'x',
-              'y',
-              'image',
-              'sourceKey',
-              'order',
-            ].includes(k),
-        ) ||
-        typeof c.action !== 'string' ||
-        (c.image !== undefined &&
-          (c.action !== 'saveFavicon' ||
-            typeof c.image !== 'string' ||
-            c.image.length > 32768)) ||
-        (c.sourceKey !== undefined &&
-          (c.action !== 'saveFavicon' ||
-            typeof c.sourceKey !== 'string' ||
-            c.sourceKey.length > 40000)) ||
-        (['x', 'y'] as const).some(
-          (key) =>
-            c[key] !== undefined &&
-            (!['openBookmarkFolder', 'openBookmarkOverflow'].includes(
-              String(c.action),
-            ) ||
-              !Number.isSafeInteger(c[key]) ||
-              Number(c[key]) < 0 ||
-              Number(c[key]) > 10000),
-        ) ||
-        (c.height !== undefined &&
-          (c.action !== 'setToolbarHeight' ||
-            !Number.isInteger(c.height) ||
-            Number(c.height) < 80 ||
-            Number(c.height) > 240)) ||
-        (c.title !== undefined &&
-          (!['updateBookmark', 'createFolder', 'renameFolder'].includes(
-            String(c.action),
-          ) ||
-            typeof c.title !== 'string' ||
-            !c.title.trim() ||
-            c.title.length > 200 ||
-            Array.from(c.title).some(
-              (char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127,
-            ))) ||
-        (c.order !== undefined &&
-          (!['updateBookmark', 'renameFolder', 'openBookmarkOverflow'].includes(
-            String(c.action),
-          ) ||
-            !Number.isSafeInteger(c.order) ||
-            Number(c.order) < 0 ||
-            Number(c.order) > 50000)) ||
-        (c.folderId !== undefined &&
-          (c.action !== 'updateBookmark' ||
-            (c.folderId !== null &&
-              (!Number.isSafeInteger(c.folderId) ||
-                Number(c.folderId) < 1)))) ||
-        (c.zoom !== undefined &&
-          (c.action !== 'setSitePreferences' ||
-            !Number.isInteger(c.zoom) ||
-            Number(c.zoom) < 50 ||
-            Number(c.zoom) > 200)) ||
-        (c.muted !== undefined &&
-          (c.action !== 'setSitePreferences' ||
-            typeof c.muted !== 'boolean')) ||
-        (c.language !== undefined &&
-          (c.action !== 'setLanguage' ||
-            (c.language !== 'auto' && !isLanguage(c.language)))) ||
-        (c.url !== undefined &&
-          (typeof c.url !== 'string' || c.url.length > 8192)) ||
-        (c.id !== undefined &&
-          (!Number.isSafeInteger(c.id) || Number(c.id) < 1))
-      )
-        throw Error('Invalid arguments');
-      return controller!.command(c as unknown as Command);
+      return controller!.command(parseCommand(raw));
     });
     controller.restore();
     void startup.then(() => controller?.emit());
@@ -316,6 +232,9 @@ app
   })
   .catch((e) => {
     console.error(e);
+    // Closing the window during startup aborts loading the interface. That is
+    // not a startup error, and a modal error box would block the shutdown.
+    if (quitting) return;
     dialog.showErrorBox('Perun IPFS Browser', (e as Error).message);
     app.quit();
   });

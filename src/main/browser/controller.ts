@@ -2,6 +2,8 @@ import { Favicons } from './favicons';
 import {
   readLimitedBody,
   readLimitedFile,
+  renderedSource,
+  serializedDocument,
   SourceTooLargeError,
 } from './page-source';
 import { join } from 'node:path';
@@ -496,15 +498,7 @@ export class BrowserController {
     return tab;
   }
   private validateMenuPosition(command: Command) {
-    if (
-      this.overlay ||
-      command.x === undefined ||
-      command.y === undefined ||
-      !Number.isSafeInteger(command.x) ||
-      !Number.isSafeInteger(command.y) ||
-      command.x < 0 ||
-      command.y < 0
-    )
+    if (this.overlay || command.x === undefined || command.y === undefined)
       throw Error('Invalid menu position');
     const [width, height] = this.window.getContentSize();
     if (
@@ -625,14 +619,10 @@ export class BrowserController {
           command.sourceKey,
         );
       case 'setToolbarHeight':
-        if (
-          !Number.isInteger(command.height) ||
-          command.height! < 80 ||
-          command.height! > 240
-        )
-          throw Error('Invalid toolbar height');
+        // Ranges are checked by parseCommand; only presence matters here.
+        if (command.height === undefined) throw Error('Invalid toolbar height');
         if (this.toolbarHeight !== command.height) {
-          this.toolbarHeight = command.height!;
+          this.toolbarHeight = command.height;
           this.layout();
         }
         return;
@@ -664,12 +654,7 @@ export class BrowserController {
             submenu: this.folderMenuItems(folder.id),
           })),
         ];
-        if (
-          command.order === undefined ||
-          !Number.isSafeInteger(command.order) ||
-          command.order < 0 ||
-          command.order >= items.length
-        )
+        if (command.order === undefined || command.order >= items.length)
           throw Error('Invalid overflow position');
         this.popupBookmarkMenu(items.slice(command.order), command);
         return;
@@ -723,19 +708,22 @@ export class BrowserController {
         const url = new URL(tab.view.webContents.getURL());
         url.hash = '';
         try {
-          let source: string;
-          if (url.protocol === 'file:') {
+          // Prefer the exact bytes the renderer received. Without them (custom
+          // protocols, uncached responses) reread only what cannot change: a
+          // local file or content-addressed IPFS/IPNS data. An HTTP(S) refetch
+          // could return different content (e.g. after a POST), so serialize
+          // the document that is on screen instead.
+          let source = await renderedSource(tab.view.webContents);
+          if (source === undefined && url.protocol === 'file:')
             source = await readLimitedFile(url);
-          } else {
-            // Prefer the cached copy so the text matches what the page showed.
+          else if (source === undefined && url.protocol === 'p2p:') {
             const response = await this.session.fetch(url.href, {
-              credentials: 'include',
-              cache: 'force-cache',
               signal: AbortSignal.timeout(30000),
             });
             if (!response.ok) throw Error('HTTP ' + response.status);
             source = await readLimitedBody(response);
-          }
+          } else if (source === undefined)
+            source = await serializedDocument(tab.view.webContents);
           this.scopedTab(command);
           clipboard.writeText(source);
         } catch (error) {
@@ -885,8 +873,7 @@ export class BrowserController {
           this.store.removeBookmark(parseAddress(command.url).display);
         return;
       case 'setLanguage':
-        if (command.language !== 'auto' && !isLanguage(command.language))
-          throw Error('Invalid language');
+        if (command.language === undefined) throw Error('Invalid language');
         this.languagePreference = command.language;
         this.store.set('language', command.language);
         setLocale(

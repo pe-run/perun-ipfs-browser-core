@@ -151,7 +151,7 @@ it('restarts a node that crashed after it had been running', async () => {
   }
 }, 90000);
 
-it('keeps user storage limits and rejects a malformed repository config', async () => {
+it('keeps user storage limits and swarm addresses and rejects a malformed repository config', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'kubo-config-')),
     repo = join(dir, 'repo'),
     config = join(repo, 'config');
@@ -160,13 +160,24 @@ it('keeps user storage limits and rejects a malformed repository config', async 
     await engine.start();
     await engine.stop();
     const data = JSON.parse(await readFile(config, 'utf8'));
+    // A fresh repository gets dynamic swarm ports.
+    expect(data.Addresses.Swarm).toEqual([
+      '/ip4/0.0.0.0/tcp/0',
+      '/ip4/0.0.0.0/udp/0/quic-v1',
+      '/ip6/::/tcp/0',
+    ]);
     data.Datastore.StorageMax = '2GB';
+    data.Addresses.Swarm = ['/ip4/127.0.0.1/tcp/0'];
+    data.Addresses.Gateway = '/ip4/127.0.0.1/tcp/8080';
     await writeFile(config, JSON.stringify(data));
     await engine.start();
     await engine.stop();
-    expect(
-      JSON.parse(await readFile(config, 'utf8')).Datastore.StorageMax,
-    ).toBe('2GB');
+    const saved = JSON.parse(await readFile(config, 'utf8'));
+    expect(saved.Datastore.StorageMax).toBe('2GB');
+    expect(saved.Addresses.Swarm).toEqual(['/ip4/127.0.0.1/tcp/0']);
+    // The gateway and RPC endpoint stay private regardless of user edits.
+    expect(saved.Addresses.Gateway).toBe('');
+    expect(saved.Addresses.API).toMatch(/^\/unix\//);
     data.Addresses = 'broken';
     await writeFile(config, JSON.stringify(data));
     await expect(engine.start()).rejects.toThrow('Invalid Kubo repository');

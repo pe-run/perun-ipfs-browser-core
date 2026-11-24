@@ -148,6 +148,7 @@ export async function serveP2P(
         'cat',
         { arg: path, offset: String(start), length: String(end - start + 1) },
         request.signal,
+        { streaming: true },
       ),
     ) as ReadableStream<Uint8Array>;
     return new Response(body, { status, headers });

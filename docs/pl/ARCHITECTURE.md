@@ -14,6 +14,7 @@ Wszystkie odwiedzane strony korzystają z `persist:browsing`, bez preloadu i bez
 - `ipfs/protocol.ts`: handler zasobów, katalogi/index.html, MIME, strumienie, błędy i Range.
 - `storage/store.ts`: SQLite za pomocą oficjalnego modułu `node:sqlite` w Node/Electron; brak natywnego dodatku wymagającego rebuild ABI.
 - `security/policy.ts`: ustawienia widoków i polityka sesji.
+- `security/commands.ts`: schemat komend IPC; każda akcja ma listę dozwolonych pól, każde pole jeden walidator, a nieznane akcje i obce pola są odrzucane przed kontrolerem.
 
 ## Protokoły i originy
 

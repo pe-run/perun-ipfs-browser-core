@@ -99,11 +99,13 @@ export class KuboEngine implements IPFSEngine {
       await mkdir(this.repo, { recursive: true, mode: 0o700 });
       await chmod(this.repo, 0o700);
       let text: string;
+      let initialized = false;
       try {
         text = await readFile(join(this.repo, 'config'), 'utf8');
       } catch (e) {
         if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
         await this.cli('init', '--profile=lowpower');
+        initialized = true;
         text = await readFile(join(this.repo, 'config'), 'utf8');
       }
       const parsed: unknown = JSON.parse(text);
@@ -119,13 +121,17 @@ export class KuboEngine implements IPFSEngine {
       };
       await assertRepositoryInactive(this.repo, config.Addresses.API);
       if (!config.Identity.PeerID) throw Error(t('invalidRepo'));
+      // Security-relevant: always a private socket and no HTTP gateway.
       config.Addresses.API = `/unix${this.socket}`;
       config.Addresses.Gateway = '';
-      config.Addresses.Swarm = [
-        '/ip4/0.0.0.0/tcp/0',
-        '/ip4/0.0.0.0/udp/0/quic-v1',
-        '/ip6/::/tcp/0',
-      ];
+      // Dynamic ports avoid collisions, but only as a default: swarm addresses
+      // that the user changed in an existing repository are kept.
+      if (initialized || config.Addresses.Swarm === undefined)
+        config.Addresses.Swarm = [
+          '/ip4/0.0.0.0/tcp/0',
+          '/ip4/0.0.0.0/udp/0/quic-v1',
+          '/ip6/::/tcp/0',
+        ];
       // Defaults only: a limit that the user already set in the repo is kept.
       config.Datastore.StorageMax ??= '10GB';
       config.Datastore.StorageGCWatermark ??= 90;
@@ -211,13 +217,26 @@ export class KuboEngine implements IPFSEngine {
       this.start().catch(() => this.scheduleRestart());
     }, delay);
   }
+  /**
+   * `timeoutMs` limits socket inactivity. For `streaming` responses it applies
+   * only until the response starts: a paused media element may legitimately
+   * stop reading for minutes, and the request's signal still cancels it.
+   */
   async rpc(
     command: string,
     params: Record<string, string> = {},
     signal?: AbortSignal,
-    body?: Uint8Array,
-    contentType = 'application/octet-stream',
-    timeoutMs = 60000,
+    {
+      body,
+      contentType = 'application/octet-stream',
+      timeoutMs = 60000,
+      streaming = false,
+    }: {
+      body?: Uint8Array;
+      contentType?: string;
+      timeoutMs?: number;
+      streaming?: boolean;
+    } = {},
   ): Promise<Readable> {
     const query = new URLSearchParams(params);
     return new Promise((resolve, reject) => {
@@ -238,8 +257,10 @@ export class KuboEngine implements IPFSEngine {
           timeout: timeoutMs,
         },
         (res) => {
-          if (res.statusCode === 200) resolve(res);
-          else {
+          if (res.statusCode === 200) {
+            if (streaming) req.setTimeout(0);
+            resolve(res);
+          } else {
             const parts: Buffer[] = [];
             let bytes = 0;
             res.on('data', (b: Buffer) => {
@@ -277,6 +298,7 @@ export class KuboEngine implements IPFSEngine {
         'cat',
         { arg: `/ipfs/${cid}/${path.replace(/^\//, '')}` },
         signal,
+        { streaming: true },
       ),
     ) as ReadableStream<Uint8Array>;
   }

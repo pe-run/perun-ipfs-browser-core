@@ -30,6 +30,7 @@ let app: ElectronApplication,
   peer: string;
 let iconRequests: string[] = [];
 let faviconOffline = false;
+let postResponses = 0;
 let finishSlowPage: (() => void) | undefined;
 let server: ReturnType<typeof createServer>,
   https: ReturnType<typeof createHttpsServer>,
@@ -219,6 +220,17 @@ test.beforeAll(async () => {
       return;
     }
 
+    if (req.url === '/post-source') {
+      // Every response is unique: refetching cannot reproduce the shown page.
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Cache-Control', 'no-store');
+      res.end(
+        req.method === 'POST'
+          ? `<h1>Posted ${++postResponses}</h1>`
+          : `<h1>Form ${++postResponses}</h1><form method="post"><button>Send</button></form>`,
+      );
+      return;
+    }
     if (req.url === '/download') {
       res.setHeader('Content-Disposition', 'attachment; filename=fixture.txt');
       res.end('download fixture');
@@ -371,6 +383,34 @@ test('clears history, cookies and site storage after confirmation', async () => 
   expect(await p.evaluate(() => localStorage.getItem('fixture'))).toBeNull();
   await ui.locator('#settings-dialog [data-dismiss]').click();
 });
+test('copies the source of a POST result as shown, without a new request', async () => {
+  // A cacheable GET page: the copy is the exact response, not a DOM dump.
+  await go(base + '/second');
+  const second = await page('/second');
+  await expect(second.locator('h1')).toHaveText('Second');
+  await ui.locator('#site-settings').click();
+  await ui.locator('#site-copy-source').click();
+  await expect
+    .poll(() => app.evaluate(({ clipboard }) => clipboard.readText()))
+    .toBe('<h1>Second</h1>');
+  await ui.locator('#site-dialog [data-dismiss]').click();
+  await go(base + '/post-source');
+  const p = await page('/post-source');
+  await p.getByRole('button', { name: 'Send' }).click();
+  await expect(p.locator('h1')).toHaveText(/^Posted \d+$/);
+  const shown = await p.locator('h1').textContent();
+  const requests = postResponses;
+  await ui.locator('#site-settings').click();
+  await ui.locator('#site-copy-source').click();
+  // The uncached POST result is not downloaded again (that would be a new,
+  // different page); the copy contains the response that is on screen.
+  await expect
+    .poll(() => app.evaluate(({ clipboard }) => clipboard.readText()))
+    .toContain(`<h1>${shown}</h1>`);
+  expect(postResponses).toBe(requests);
+  await ui.locator('#site-dialog [data-dismiss]').click();
+});
+
 test('fills the address field as a progress bar until navigation completes or stops', async () => {
   const address = ui.locator('#address');
   for (const stop of [false, true]) {
