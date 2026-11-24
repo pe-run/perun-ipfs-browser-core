@@ -225,10 +225,12 @@ The standalone forum and its site API were removed from the browser source tree.
 
 0.18.0 validation: typecheck/lint, 76 unit tests, 12 real-Kubo integration tests and 23 Playwright scenarios pass on Node 24. Linux DEB and ZIP were built; the packaged-app smoke test, RPM and AppImage were not run in this environment (no root-owned SUID sandbox helper, rpmbuild or appimagetool).
 
-## Unreleased — smaller fixes
+## 0.18.1 — smaller fixes
 
 - Quitting while the interface is still loading no longer hangs behind a startup error box, and no Kubo node is started after a quit request.
 - Content streams keep the RPC inactivity timeout only until the response starts, so paused media is not cut off after 60 seconds.
 - Swarm addresses edited in an existing Kubo repository are kept; dynamic ports remain the default for new repositories.
 - Copy page source uses the bytes the page received (DevTools protocol), rereads local files and immutable IPFS/IPNS data, and otherwise serializes the shown document instead of downloading an HTTP(S) page again.
 - IPC commands are validated by one schema (`security/commands.ts`) with per-action fields.
+
+0.18.1 validation: typecheck/lint, 81 unit tests, 12 real-Kubo integration tests and 25 Playwright scenarios pass on Node 24. Linux DEB and ZIP were built and the DEB was checked for the project desktop entry (`StartupWMClass=ipfs-browser`), the Perun icon, the SUID sandbox helper and bundled Kubo; the packaged-app smoke test, RPM and AppImage were not run in this environment.
