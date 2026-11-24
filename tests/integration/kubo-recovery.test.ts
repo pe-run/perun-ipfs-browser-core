@@ -206,3 +206,27 @@ require('node:net').createServer(client => client.resume()).listen(socket);
     await rm(dir, { recursive: true, force: true });
   }
 }, 45000);
+it('recovers manually after a failed first start', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'kubo-retry-')),
+    repo = join(dir, 'repo');
+  const owner = new KuboEngine(binary, repo, true, false),
+    engine = new KuboEngine(binary, repo, true, false);
+  try {
+    await owner.start();
+    await expect(engine.start()).rejects.toThrow('already used');
+    expect(engine.state).toBe('failed');
+    await owner.stop();
+    await engine.restart();
+    expect(engine.state).toBe('ready');
+    expect(await engine.json('id')).toBeTruthy();
+    // A running node can also be restarted on request.
+    const socket = engine.socket;
+    await engine.restart();
+    expect(engine.state).toBe('ready');
+    expect(engine.socket).not.toBe(socket);
+  } finally {
+    await owner.stop();
+    await engine.stop();
+    await rm(dir, { recursive: true, force: true });
+  }
+}, 90000);

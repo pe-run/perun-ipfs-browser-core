@@ -4,7 +4,7 @@
 
 Proces główny Electrona zarządza oknem, kartami WebContentsView, SQLite i procesem Kubo. Renderer interfejsu to osobna sesja `persist:interface`, lokalny plik produkcyjny lub serwer Vite w development. Tylko jej główna ramka, o dokładnie sprawdzonym URL, może wywołać mały zestaw komend preload. Argumenty są walidowane. Nawigacja i popupy UI poza jego adresem są blokowane.
 
-Wszystkie odwiedzane strony korzystają z `persist:browsing`. Zapis wymaga natywnego potwierdzenia; zobacz [WEB_IPFS_API.md](../../WEB_IPFS_API.md). nodeIntegration=false, contextIsolation=true, sandbox=true, webSecurity=true. Kamera, mikrofon, geolokalizacja i pozostałe uprawnienia są domyślnie odrzucane. Nie ma wyjątków dla błędnych certyfikatów w aplikacji. Pobranie pliku wymaga natywnego wyboru ścieżki. Popupy poprawnych protokołów tworzą karty, pozostałe są odrzucane. file:// i uprzywilejowany UI są niedostępne dla treści stron.
+Wszystkie odwiedzane strony korzystają z `persist:browsing`, bez preloadu i bez żadnego API IPFS dla stron (dawne API stron IPFS wycofano razem z forum). nodeIntegration=false, contextIsolation=true, sandbox=true, webSecurity=true. Kamera, mikrofon, geolokalizacja i pozostałe uprawnienia są domyślnie odrzucane. Nie ma wyjątków dla błędnych certyfikatów w aplikacji. Pobranie pliku wymaga natywnego wyboru ścieżki; okno dialogowe jest asynchroniczne, plik trafia najpierw do pliku tymczasowego w profilu i po wyborze jest przenoszony, więc dialog nie blokuje procesu głównego. Popupy poprawnych protokołów tworzą karty tylko po niedawnej akcji użytkownika w tej karcie (kliknięcie lub klawisz daje jeden popup przez pięć sekund; nowy dokument to zeruje); `window.open` wywołane przez sam skrypt jest odrzucane, bo Electron nie ma własnego blokera popupów. Pozostałe są odrzucane. file:// i uprzywilejowany UI są niedostępne dla treści stron.
 
 ## Moduły
 
@@ -41,7 +41,7 @@ Repozytorium znajduje się w `app.getPath('userData')/ipfs`, z uprawnieniami 070
 
 ## Dane trwałe
 
-`browser.sqlite` przechowuje historię, zakładki, ustawienie przywracania kart, ostatnie adresy kart i rejestr ręcznych pinów. Prepared statements i WAL. Chromium przechowuje dane stron i cookies w trwałej sesji. Magazyn bloków jest osobnym katalogiem. Profil można zmienić przez `IPFS_BROWSER_PROFILE` (testy używają katalogów tymczasowych); `IPFS_BROWSER_OFFLINE=1` uruchamia Kubo offline, bez P2P. Ten tryb służy lokalnym fixture'om. Statystyki transferu są wtedy niedostępne (null).
+`browser.sqlite` przechowuje historię, zakładki, ustawienie przywracania kart, ostatnie adresy kart i rejestr ręcznych pinów. Prepared statements i WAL. Historia zachowuje 10 000 najnowszych wizyt. **Wyczyść dane przeglądania** w Ustawieniach, po natywnym potwierdzeniu, usuwa historię oraz cookies, dane stron, cache i uwierzytelnienie HTTP sesji `persist:browsing`; zakładki, ustawienia, preferencje stron, favikony, piny i bloki IPFS zostają. Gdy pierwszy start Kubo się nie powiedzie lub węzeł wyczerpie automatyczne restarty, obok statusu pojawia się przycisk **Uruchom węzeł ponownie**. Chromium przechowuje dane stron i cookies w trwałej sesji. Magazyn bloków jest osobnym katalogiem. Profil można zmienić przez `IPFS_BROWSER_PROFILE` (testy używają katalogów tymczasowych); `IPFS_BROWSER_OFFLINE=1` uruchamia Kubo offline, bez P2P. Ten tryb służy lokalnym fixture'om. Statystyki transferu są wtedy niedostępne (null).
 
 ## Ograniczenia MVP
 

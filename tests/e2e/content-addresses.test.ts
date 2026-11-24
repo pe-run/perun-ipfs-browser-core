@@ -242,7 +242,9 @@ test('native IPFS and IPNS URLs work in navigation and embedded resources', asyn
     await ui.locator('#site-dialog [data-dismiss]').click();
     const destination = join(directory, 'download.txt');
     await app.evaluate(({ dialog }, path) => {
-      dialog.showSaveDialogSync = () => path;
+      Object.assign(dialog, {
+        showSaveDialog: async () => ({ canceled: false, filePath: path }),
+      });
       dialog.showErrorBox = () => {};
     }, destination);
     await page
@@ -253,7 +255,9 @@ test('native IPFS and IPNS URLs work in navigation and embedded resources', asyn
       .toBe('download fixture');
     const rootDestination = join(directory, 'root-download.txt');
     await app.evaluate(({ dialog }, path) => {
-      dialog.showSaveDialogSync = () => path;
+      Object.assign(dialog, {
+        showSaveDialog: async () => ({ canceled: false, filePath: path }),
+      });
     }, rootDestination);
     await page
       .getByText('Root download', { exact: true })

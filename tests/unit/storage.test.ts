@@ -6,7 +6,7 @@ import {
   starterBookmarks,
   starterFolders,
 } from '../../src/shared/starter-bookmarks';
-import { Store } from '../../src/main/storage/store';
+import { Store, historyLimit } from '../../src/main/storage/store';
 it('persists history, bookmarks, settings and manual pins across restart', () => {
   const dir = mkdtempSync(join(tmpdir(), 'browser-store-')),
     file = join(dir, 'test.sqlite');
@@ -113,5 +113,33 @@ it('persists bookmark folders and edits; deleting a folder preserves its bookmar
     s.close();
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+it('keeps only the newest history entries and clears history on request', () => {
+  const s = new Store(':memory:');
+  try {
+    s.bookmark('https://example.org/kept', 'Kept');
+    s.set('restoreTabs', false);
+    for (let i = 0; i < historyLimit + 5; i++)
+      s.visit(`https://example.org/${i}`, `Visit ${i}`);
+    const history = s.history() as { url: string }[];
+    expect(history[0].url).toBe(`https://example.org/${historyLimit + 4}`);
+    const count = (
+      s as unknown as {
+        db: { prepare(sql: string): { get(): { n: number } } };
+      }
+    ).db
+      .prepare('SELECT count(*) AS n FROM history')
+      .get().n;
+    expect(count).toBe(historyLimit);
+    s.clearHistory();
+    expect(s.history()).toEqual([]);
+    expect(
+      s.bookmarks().some((b) => b.url === 'https://example.org/kept'),
+    ).toBe(true);
+    expect(s.get('restoreTabs', true)).toBe(false);
+  } finally {
+    s.close();
   }
 });

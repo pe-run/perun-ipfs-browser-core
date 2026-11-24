@@ -71,10 +71,18 @@ app.on('before-quit', (event) => {
   if (quitting) return;
   event.preventDefault();
   quitting = true;
-  controller?.destroy();
+  // A failing step must not prevent the remaining cleanup or the final quit.
+  const step = async (name: string, action: () => unknown) => {
+    try {
+      await action();
+    } catch (error) {
+      console.error(`Shutdown (${name}):`, error);
+    }
+  };
   void (async () => {
-    await engine?.stop();
-    store?.close();
+    await step('browser', () => controller?.destroy());
+    await step('kubo', () => engine?.stop());
+    await step('store', () => store?.close());
     app.quit();
   })();
 });
@@ -95,6 +103,7 @@ app
       join(app.getPath('userData'), 'ipfs'),
       process.env.IPFS_BROWSER_OFFLINE === '1',
     );
+    // A failed first start is shown in the interface and can be retried there.
     const startup = engine.start().catch((e) => console.error('Kubo:', e));
     installP2P(content, engine, startup);
     installLocalFiles(content);

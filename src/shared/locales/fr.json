@@ -66,7 +66,6 @@
   "forbiddenNavigation": "Navigation vers cette adresse interdite",
   "navigationFailed": "Échec de navigation ({code}) : {error}",
   "rendererGone": "Processus de page arrêté : {error}",
-  "pinOnly": "L’épinglage est disponible pour IPFS/IPNS",
   "noTab": "Aucun onglet actif",
   "download": "Téléchargement",
   "downloadFailed": "Téléchargement : {error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "Barre de favoris",
   "bookmarkName": "Nom du favori",
   "position": "Position",
-  "emptyFolder": "Ce dossier est vide."
+  "emptyFolder": "Ce dossier est vide.",
+  "restartNode": "Redémarrer le nœud",
+  "clearData": "Effacer les données de navigation",
+  "clearDataConfirm": "Effacer les données de navigation ?",
+  "clearDataDetail": "L’historique, les cookies, le stockage des sites et le cache seront supprimés. Les favoris, les épinglages et le contenu IPFS sont conservés.",
+  "cancel": "Annuler",
+  "clearDataDone": "Données de navigation effacées",
+  "nodeStarting": "Le nœud IPFS est déjà en cours de démarrage"
 }

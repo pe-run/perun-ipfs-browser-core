@@ -66,7 +66,6 @@
   "forbiddenNavigation": "Переход по этому адресу запрещён",
   "navigationFailed": "Ошибка навигации ({code}): {error}",
   "rendererGone": "Процесс страницы завершён: {error}",
-  "pinOnly": "Закрепление доступно для IPFS/IPNS",
   "noTab": "Нет активной вкладки",
   "download": "Загрузка",
   "downloadFailed": "Загрузка: {error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "Панель закладок",
   "bookmarkName": "Название закладки",
   "position": "Позиция",
-  "emptyFolder": "Эта папка пуста."
+  "emptyFolder": "Эта папка пуста.",
+  "restartNode": "Перезапустить узел",
+  "clearData": "Очистить данные браузера",
+  "clearDataConfirm": "Очистить данные браузера?",
+  "clearDataDetail": "История, файлы cookie, хранилище сайтов и кеш будут удалены. Закладки, закрепления и содержимое IPFS сохранятся.",
+  "cancel": "Отмена",
+  "clearDataDone": "Данные браузера очищены",
+  "nodeStarting": "Узел IPFS уже запускается"
 }

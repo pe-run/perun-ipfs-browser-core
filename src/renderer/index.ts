@@ -692,6 +692,9 @@ function renderState(s: BrowserState) {
   $<HTMLButtonElement>('back').disabled = !tab?.back;
   $<HTMLButtonElement>('forward').disabled = !tab?.forward;
   $('node').textContent = `IPFS: ${s.node}`;
+  $('restart-node').hidden = !['failed', 'crashed', 'stopped'].includes(
+    s.nodeState,
+  );
   $('message').textContent = tab?.error || userError;
   $('panel').hidden = !s.panel;
   updateBookmarkStar();
@@ -756,6 +759,23 @@ $('stats').onclick = async () => {
   if (!data) $('details').textContent = t('nodeUnavailable');
 };
 $('restore').onchange = () => void command({ action: 'toggleRestore' });
+$('restart-node').onclick = async () => {
+  const restart = $<HTMLButtonElement>('restart-node');
+  restart.disabled = true;
+  try {
+    await command({ action: 'restartNode' });
+  } finally {
+    restart.disabled = false;
+  }
+};
+$('clear-data').onclick = async () => {
+  $('clear-data-status').textContent = '';
+  if ((await command({ action: 'clearBrowsingData' })) === true) {
+    $('clear-data-status').textContent = t('clearDataDone');
+    details = undefined;
+    renderDetails();
+  }
+};
 $('language').onchange = () => {
   void command({
     action: 'setLanguage',

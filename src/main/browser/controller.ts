@@ -9,6 +9,8 @@ import {
   loadingIndicatorSize,
 } from './loading-indicator';
 import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { copyFile, rename, rm } from 'node:fs/promises';
 import { linkPreviewURL } from '../../shared/link-preview';
 import { sitePreferences, siteScope } from './preferences';
 import {
@@ -56,6 +58,25 @@ type Tab = {
   awaitingContent?: boolean;
 };
 type SavedTab = Pick<Tab, 'state' | 'home'> & { view?: undefined };
+/** Input that grants a page one popup, like Chromium's transient user activation. */
+const activationInputs = new Set([
+  'mouseDown',
+  'mouseUp',
+  'rawKeyDown',
+  'keyDown',
+  'touchEnd',
+  'gestureTap',
+]);
+const activationMs = 5000;
+async function moveFile(from: string, to: string) {
+  try {
+    await rename(from, to);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'EXDEV') throw error;
+    await copyFile(from, to);
+    await rm(from, { force: true });
+  }
+}
 export class BrowserController {
   private tabs: (SavedTab | Tab)[] = [];
   private active = 0;
@@ -100,27 +121,47 @@ export class BrowserController {
         const target = requestRedirect(item.getURL(), contents?.getURL());
         if (target) {
           item.cancel();
-          contents.downloadURL(target);
+          if (contents && !contents.isDestroyed()) contents.downloadURL(target);
           return;
         }
       } catch {
         item.cancel();
         return;
       }
-      const path = dialog.showSaveDialogSync(window, {
-        defaultPath: item.getFilename(),
+      // Electron needs the save path synchronously, but a synchronous dialog would
+      // freeze the main process (IPC, protocol handlers). Download to a private
+      // temporary file and move it once the asynchronous dialog has an answer.
+      const temporary = join(
+        app.getPath('temp'),
+        `download-${randomUUID()}.part`,
+      );
+      item.setSavePath(temporary);
+      const destination = dialog
+        .showSaveDialog(window, { defaultPath: item.getFilename() })
+        .then(
+          ({ canceled, filePath }) => (canceled ? undefined : filePath),
+          () => undefined,
+        );
+      void destination.then((path) => {
+        if (!path && item.getState() === 'progressing') item.cancel();
       });
-      if (!path) item.cancel();
-      else {
-        item.setSavePath(path);
-        item.once('done', (_e, state) => {
-          if (state !== 'completed')
-            dialog.showErrorBox(
-              t('download'),
-              t('downloadFailed', { error: state }),
-            );
-        });
-      }
+      const fail = (error: string) => {
+        if (!window.isDestroyed())
+          dialog.showErrorBox(t('download'), t('downloadFailed', { error }));
+      };
+      item.once('done', (_e, state) => {
+        void (async () => {
+          const path = await destination;
+          try {
+            if (state === 'completed' && path) await moveFile(temporary, path);
+            else if (path) fail(state);
+          } catch (error) {
+            fail((error as Error).message);
+          } finally {
+            await rm(temporary, { force: true }).catch(() => {});
+          }
+        })();
+      });
     });
   }
   restore() {
@@ -205,6 +246,7 @@ export class BrowserController {
       panel: this.panel,
       overlay: this.overlay,
       node: this.nodeLabel(),
+      nodeState: this.engine.state,
       locale: getLocale(),
       languagePreference: this.languagePreference,
     };
@@ -290,7 +332,15 @@ export class BrowserController {
     this.window.contentView.addChildView(view);
     if (this.loadingIndicator)
       this.window.contentView.addChildView(this.loadingIndicator);
+    // Electron has no popup blocker: without this, a script could open tabs in a loop.
+    let activation = 0;
+    wc.on('input-event', (_event, input) => {
+      if (activationInputs.has(input.type)) activation = Date.now();
+    });
     wc.setWindowOpenHandler(({ url }) => {
+      const activated = Date.now() - activation < activationMs;
+      activation = 0;
+      if (!activated) return { action: 'deny' };
       try {
         const target = navigationAddress(
           requestRedirect(url, wc.getURL()) ?? url,
@@ -402,6 +452,8 @@ export class BrowserController {
       this.update(tab);
     });
     wc.on('did-navigate', () => {
+      // A new document starts without the previous page's user activation.
+      activation = 0;
       tab.navigationURL = undefined;
       tab.state.error = undefined;
       tab.awaitingContent = false;
@@ -901,27 +953,39 @@ export class BrowserController {
           throw Error(t('invalidImport'));
         clipboard.writeText(command.url);
         return;
+      case 'restartNode': {
+        if (this.engine.state === 'starting') throw Error(t('nodeStarting'));
+        const restart = this.engine.restart();
+        this.emit();
+        try {
+          await restart;
+        } finally {
+          this.emit();
+        }
+        return;
+      }
+      case 'clearBrowsingData': {
+        const { response } = await dialog.showMessageBox(this.window, {
+          type: 'warning',
+          buttons: [t('clearData'), t('cancel')],
+          defaultId: 1,
+          cancelId: 1,
+          message: t('clearDataConfirm'),
+          detail: t('clearDataDetail'),
+        });
+        if (response !== 0) return false;
+        this.store.clearHistory();
+        await this.session.clearStorageData();
+        await this.session.clearCache();
+        await this.session.clearAuthCache();
+        return true;
+      }
       case 'stats':
         return {
           ...(await this.engine.getStats()),
           status: this.nodeLabel(),
           manualPins: this.store.pins(),
         };
-      case 'pin':
-      case 'unpin': {
-        if (!tab) throw Error(t('noTab'));
-        const a = parseAddress(tab.state.url);
-        if (!a.root || !['ipfs', 'ipns'].includes(a.kind))
-          throw Error(t('pinOnly'));
-        const cid =
-          a.kind === 'ipns'
-            ? (await this.engine.resolveIPNS(a.root)).split('/')[2]
-            : a.root;
-        if (command.action === 'pin') await this.engine.pin(cid);
-        else await this.engine.unpin(cid);
-        this.store.pin(cid, command.action === 'pin');
-        return cid;
-      }
       default:
         throw Error('Unknown command');
     }

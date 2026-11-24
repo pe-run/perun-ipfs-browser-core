@@ -66,7 +66,6 @@
   "forbiddenNavigation": "Niedozwolony adres nawigacji",
   "navigationFailed": "Błąd {code}: {error}",
   "rendererGone": "Proces strony zakończony: {error}",
-  "pinOnly": "Przypinanie jest dostępne dla IPFS/IPNS",
   "noTab": "Brak karty",
   "download": "Pobieranie",
   "downloadFailed": "Pobieranie: {error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "Pasek zakładek",
   "bookmarkName": "Nazwa zakładki",
   "position": "Pozycja",
-  "emptyFolder": "Ten katalog jest pusty."
+  "emptyFolder": "Ten katalog jest pusty.",
+  "restartNode": "Uruchom węzeł ponownie",
+  "clearData": "Wyczyść dane przeglądania",
+  "clearDataConfirm": "Wyczyścić dane przeglądania?",
+  "clearDataDetail": "Historia, ciasteczka, dane stron i pamięć podręczna zostaną usunięte. Zakładki, przypięcia i treści IPFS pozostaną.",
+  "cancel": "Anuluj",
+  "clearDataDone": "Dane przeglądania wyczyszczone",
+  "nodeStarting": "Węzeł IPFS już się uruchamia"
 }

@@ -66,7 +66,6 @@
   "forbiddenNavigation": "このアドレスへの移動は許可されていません",
   "navigationFailed": "移動に失敗しました（{code}）：{error}",
   "rendererGone": "ページのプロセスが停止しました：{error}",
-  "pinOnly": "IPFS/IPNS のコンテンツのみピン留めできます",
   "noTab": "アクティブなタブがありません",
   "download": "ダウンロード",
   "downloadFailed": "ダウンロード：{error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "ブックマークバー",
   "bookmarkName": "ブックマーク名",
   "position": "位置",
-  "emptyFolder": "このフォルダーは空です。"
+  "emptyFolder": "このフォルダーは空です。",
+  "restartNode": "ノードを再起動",
+  "clearData": "閲覧データを消去",
+  "clearDataConfirm": "閲覧データを消去しますか？",
+  "clearDataDetail": "履歴、Cookie、サイトのストレージ、キャッシュが削除されます。ブックマーク、ピン、IPFS コンテンツは保持されます。",
+  "cancel": "キャンセル",
+  "clearDataDone": "閲覧データを消去しました",
+  "nodeStarting": "IPFS ノードはすでに起動中です"
 }

@@ -37,7 +37,8 @@
           aria-label="Settings"
         >
           ⚙</button
-        ><span id="node"></span>
+        ><span id="node"></span
+        ><button id="restart-node" data-i18n="restartNode" hidden></button>
       </div>
       <div class="row">
         <button id="back" data-i18n-title="back" title="Back">←</button
@@ -190,6 +191,10 @@
       <p class="language-setting">
         <label for="language" data-i18n="language"></label>
         <select id="language"></select>
+      </p>
+      <p>
+        <button id="clear-data" data-i18n="clearData"></button>
+        <span id="clear-data-status" role="status"></span>
       </p>
 
       <p data-i18n="permissionsDenied"></p>

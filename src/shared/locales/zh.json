@@ -66,7 +66,6 @@
   "forbiddenNavigation": "不允许导航到此地址",
   "navigationFailed": "导航失败（{code}）：{error}",
   "rendererGone": "页面进程已停止：{error}",
-  "pinOnly": "只能固定 IPFS/IPNS 内容",
   "noTab": "没有活动标签页",
   "download": "下载",
   "downloadFailed": "下载：{error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "书签栏",
   "bookmarkName": "书签名称",
   "position": "位置",
-  "emptyFolder": "此文件夹为空。"
+  "emptyFolder": "此文件夹为空。",
+  "restartNode": "重启节点",
+  "clearData": "清除浏览数据",
+  "clearDataConfirm": "清除浏览数据？",
+  "clearDataDetail": "将删除历史记录、Cookie、网站存储和缓存。书签、固定内容和 IPFS 内容将保留。",
+  "cancel": "取消",
+  "clearDataDone": "浏览数据已清除",
+  "nodeStarting": "IPFS 节点正在启动"
 }

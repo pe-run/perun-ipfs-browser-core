@@ -1,6 +1,8 @@
 import { BookmarksFile } from './bookmarks';
 import { dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+/** Older visits are dropped so the history table cannot grow without bound. */
+export const historyLimit = 10000;
 export class Store {
   private db: DatabaseSync;
   private favorites: BookmarksFile;
@@ -31,6 +33,14 @@ export class Store {
     this.db
       .prepare('INSERT INTO history(url,title,visited) VALUES(?,?,?)')
       .run(url, title, Date.now());
+    this.db
+      .prepare(
+        'DELETE FROM history WHERE id < (SELECT id FROM history ORDER BY id DESC LIMIT 1 OFFSET ?)',
+      )
+      .run(historyLimit - 1);
+  }
+  clearHistory() {
+    this.db.exec('DELETE FROM history');
   }
   bookmark(url: string, title: string) {
     this.favorites.bookmark(url, title);

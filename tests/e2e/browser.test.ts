@@ -291,7 +291,9 @@ test('HTTP, navigation, forms, popup, tab switching, bookmark and persistent his
   ).toEqual({ node: 'undefined', ipc: 'undefined' });
   const savePath = join(dir, 'downloaded.txt');
   await app.evaluate(({ dialog }, path) => {
-    dialog.showSaveDialogSync = () => path;
+    Object.assign(dialog, {
+      showSaveDialog: async () => ({ canceled: false, filePath: path }),
+    });
   }, savePath);
   await p.getByRole('link', { name: 'Download', exact: true }).click();
   await expect
@@ -308,6 +310,11 @@ test('HTTP, navigation, forms, popup, tab switching, bookmark and persistent his
   await expect(p.locator('h1')).toHaveText('Second');
   await ui.locator('#bookmark').click();
   await go(base);
+  await expect(p.locator('h1')).toHaveText('First');
+  // Script popups without user input are blocked; a real click opens one tab.
+  await p.evaluate(() => {
+    for (let i = 0; i < 5; i++) window.open('/popup');
+  });
   await p.getByRole('link', { name: 'Popup' }).click();
   await expect(ui.locator('.tab')).toHaveCount(2);
   await ui.locator('.tab').first().locator('button').first().click();
@@ -320,6 +327,48 @@ test('HTTP, navigation, forms, popup, tab switching, bookmark and persistent his
   await ui.locator('#home').click();
   await ui.locator('#library').click();
   await expect(ui.locator('#details')).toContainText(base + '/second');
+});
+test('clears history, cookies and site storage after confirmation', async () => {
+  await expect(ui.locator('#restart-node')).toBeHidden();
+  await go(base + '/second');
+  const p = await page(base + '/second');
+  await p.evaluate(() => {
+    document.cookie = 'fixture=1; max-age=3600';
+    localStorage.setItem('fixture', '1');
+  });
+  const cookies = () =>
+    app.evaluate(
+      async ({ session }) =>
+        (await session.fromPartition('persist:browsing').cookies.get({}))
+          .length,
+    );
+  expect(await cookies()).toBeGreaterThan(0);
+  await app.evaluate(({ dialog }) => {
+    Object.assign(dialog, {
+      showMessageBox: async () => ({ response: 1, checkboxChecked: false }),
+    });
+  });
+  await ui.locator('#settings').click();
+  await ui.locator('#clear-data').click();
+  await expect(ui.locator('#clear-data-status')).toHaveText('');
+  expect(await cookies()).toBeGreaterThan(0);
+  await app.evaluate(({ dialog }) => {
+    Object.assign(dialog, {
+      showMessageBox: async () => ({ response: 0, checkboxChecked: false }),
+    });
+  });
+  await ui.locator('#clear-data').click();
+  await expect(ui.locator('#clear-data-status')).toHaveText(
+    'Dane przeglądania wyczyszczone',
+  );
+  expect(await cookies()).toBe(0);
+  const library = (await ui.evaluate(() =>
+    window.browser.command({ action: 'library' }),
+  )) as { history: unknown[] };
+  expect(library.history).toEqual([]);
+  await p.reload();
+  expect(await p.evaluate(() => localStorage.getItem('fixture'))).toBeNull();
+  await ui.locator('#settings-dialog [data-dismiss]').click();
 });
 test('shows a centered loading indicator until navigation completes or stops', async () => {
   const indicator = () =>

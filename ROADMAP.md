@@ -209,3 +209,13 @@ IPNS and internal p2p:// addresses use the same turquoise cube as IPFS in tabs, 
 ## Forum separation
 
 The standalone forum and its site API were removed from the browser source tree. Existing browser profiles and Kubo repositories are retained.
+
+## Unreleased — robustness and privacy fixes
+
+- Script-driven popups are blocked: a tab may open one popup per recent click or key press.
+- Downloads no longer freeze the main process: the save dialog is asynchronous and the file is moved from a profile temporary file after the choice.
+- **Restart node** recovers from a failed first Kubo start or exhausted automatic restarts.
+- Shutdown isolates each cleanup step, so a failure cannot leave the application running.
+- **Clear browsing data** (history, cookies, site storage, cache) with native confirmation; history is capped at 10,000 visits.
+- The legacy unscoped `pin`/`unpin` commands were removed; pinning uses the page-scoped `sitePin`/`siteUnpin` commands.
+- Documentation no longer describes the withdrawn website IPFS API as present.

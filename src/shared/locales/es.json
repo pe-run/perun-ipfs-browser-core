@@ -66,7 +66,6 @@
   "forbiddenNavigation": "No se permite navegar a esta dirección",
   "navigationFailed": "Error de navegación ({code}): {error}",
   "rendererGone": "Proceso de página detenido: {error}",
-  "pinOnly": "Solo se puede fijar contenido IPFS/IPNS",
   "noTab": "No hay pestaña activa",
   "download": "Descarga",
   "downloadFailed": "Descarga: {error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "Barra de marcadores",
   "bookmarkName": "Nombre del marcador",
   "position": "Posición",
-  "emptyFolder": "Esta carpeta está vacía."
+  "emptyFolder": "Esta carpeta está vacía.",
+  "restartNode": "Reiniciar nodo",
+  "clearData": "Borrar datos de navegación",
+  "clearDataConfirm": "¿Borrar datos de navegación?",
+  "clearDataDetail": "Se eliminarán el historial, las cookies, el almacenamiento de sitios y la caché. Se conservan los marcadores, los pines y el contenido IPFS.",
+  "cancel": "Cancelar",
+  "clearDataDone": "Datos de navegación borrados",
+  "nodeStarting": "El nodo IPFS ya se está iniciando"
 }

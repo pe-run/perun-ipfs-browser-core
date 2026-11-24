@@ -66,7 +66,6 @@
   "forbiddenNavigation": "Navigation to this address is not allowed",
   "navigationFailed": "Navigation failed ({code}): {error}",
   "rendererGone": "Page process stopped: {error}",
-  "pinOnly": "Pinning is available for IPFS/IPNS content",
   "noTab": "No active tab",
   "download": "Download",
   "downloadFailed": "Download: {error}",
@@ -152,5 +151,12 @@
   "bookmarksBar": "Bookmarks bar",
   "bookmarkName": "Bookmark name",
   "position": "Position",
-  "emptyFolder": "This folder is empty."
+  "emptyFolder": "This folder is empty.",
+  "restartNode": "Restart node",
+  "clearData": "Clear browsing data",
+  "clearDataConfirm": "Clear browsing data?",
+  "clearDataDetail": "History, cookies, site storage and cache will be deleted. Bookmarks, pins and IPFS content are kept.",
+  "cancel": "Cancel",
+  "clearDataDone": "Browsing data cleared",
+  "nodeStarting": "The IPFS node is already starting"
 }

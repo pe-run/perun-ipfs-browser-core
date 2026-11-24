@@ -8,6 +8,8 @@ import { mkdir, readFile, open, chmod, rename } from 'node:fs/promises';
 import { join } from 'node:path';
 import { request } from 'node:http';
 import { Readable } from 'node:stream';
+import type { NodeState } from '../../shared/types';
+export type { NodeState };
 const exec = promisify(execFile);
 const restartDelays = [1000, 5000, 15000];
 const ipnsCacheMs = 30000;
@@ -25,12 +27,12 @@ export interface IPFSStats {
   totalOut: number | null;
   pins: string[];
 }
-export type NodeState = 'stopped' | 'starting' | 'ready' | 'failed' | 'crashed';
 export interface IPFSEngine {
   readonly state: NodeState;
   readonly detail: string;
   start(): Promise<void>;
   stop(): Promise<void>;
+  restart(): Promise<void>;
   get(
     cid: string,
     path?: string,
@@ -366,6 +368,13 @@ export class KuboEngine implements IPFSEngine {
       totalOut: bw.TotalOut,
       pins: Object.keys(pins.Keys || {}),
     };
+  }
+  /** Manual recovery, also after a failed first start or exhausted restarts. */
+  async restart() {
+    if (this.starting) throw Error(t('nodeStarting'));
+    await this.stop();
+    this.restarts = 0;
+    await this.start();
   }
   async stop() {
     this.stopping = true;

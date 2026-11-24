@@ -1,4 +1,5 @@
 import type { Language, LanguagePreference } from './i18n';
+export type NodeState = 'stopped' | 'starting' | 'ready' | 'failed' | 'crashed';
 export interface TabState {
   id: number;
   url: string;
@@ -16,6 +17,7 @@ export interface BrowserState {
   panel: boolean;
   overlay: 'settings' | 'site' | 'bookmarks' | null;
   node: string;
+  nodeState: NodeState;
   locale: Language;
   languagePreference: LanguagePreference;
 }
