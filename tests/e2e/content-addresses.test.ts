@@ -1,5 +1,5 @@
-import { browserUI } from './browser-ui';
-import { test, expect, _electron } from '@playwright/test';
+import { browserUI, launchBrowser } from './browser-ui';
+import { test, expect } from '@playwright/test';
 import type { ElectronApplication } from '@playwright/test';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -85,7 +85,7 @@ test('native IPFS and IPNS URLs work in navigation and embedded resources', asyn
     const cid = await engine.cli('add', '-Qr', site);
     await engine.cli('name', 'publish', '--allow-offline', '/ipfs/' + cid);
     await engine.stop();
-    app = await _electron.launch({
+    app = await launchBrowser({
       args: ['.'],
       env: {
         ...process.env,

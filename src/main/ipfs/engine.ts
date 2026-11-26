@@ -4,6 +4,7 @@ import {
   privateSocket,
   kuboFailure,
 } from './socket';
+import { canonicalCID } from '../../shared/address';
 import { t } from '../../shared/i18n';
 import { importToKubo, type ImportMode, type ImportResult } from './import';
 import { spawn, execFile } from 'node:child_process';
@@ -408,7 +409,9 @@ export class KuboEngine implements IPFSEngine {
         'pin/ls',
         { arg: cid, type: 'recursive' },
       );
-      return Boolean(result.Keys?.[cid]);
+      return Object.keys(result.Keys ?? {}).some(
+        (key) => canonicalCID(key) === canonicalCID(cid),
+      );
     } catch (error) {
       if (/not pinned/i.test((error as Error).message)) return false;
       throw error;

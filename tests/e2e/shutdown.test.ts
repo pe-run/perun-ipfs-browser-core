@@ -1,4 +1,5 @@
-import { test, expect, _electron as electron } from '@playwright/test';
+import { launchBrowser } from './browser-ui';
+import { test, expect } from '@playwright/test';
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -23,7 +24,7 @@ test('quits promptly when closed during startup and leaves no Kubo behind', asyn
   for (const delay of [0, 0, 50, 300]) {
     const profile = await mkdtemp(join(tmpdir(), 'browser-quit-'));
     try {
-      const app = await electron.launch({
+      const app = await launchBrowser({
         args: ['.'],
         env: {
           ...process.env,

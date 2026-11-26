@@ -1,9 +1,9 @@
-import { browserUI } from './browser-ui';
+import { browserUI, launchBrowser } from './browser-ui';
 import {
   starterBookmarks,
   starterFolders,
 } from '../../src/shared/starter-bookmarks';
-import { test, expect, _electron as electron } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import type { ElectronApplication, Page } from '@playwright/test';
 import {
   rename,
@@ -37,7 +37,7 @@ let server: ReturnType<typeof createServer>,
   base: string,
   secureBase: string;
 async function start() {
-  app = await electron.launch({
+  app = await launchBrowser({
     args: ['.'],
     env: {
       ...process.env,

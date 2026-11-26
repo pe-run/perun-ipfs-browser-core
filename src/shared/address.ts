@@ -11,9 +11,18 @@ export type Address = {
   root?: string;
   path?: string;
 };
+export function canonicalCID(value: string): string {
+  return CID.parse(
+    value,
+    base36.decoder.or(base32.decoder).or(base58btc.decoder),
+  ).toString();
+}
+export function canBookmark(url?: string): boolean {
+  return !!url && /^(https?|ipfs|ipns):\/\//i.test(url);
+}
 export function validCID(value: string): boolean {
   try {
-    CID.parse(value, base36.decoder.or(base32.decoder).or(base58btc.decoder));
+    canonicalCID(value);
     return true;
   } catch {
     return false;
@@ -92,14 +101,10 @@ export function navigationAddress(url: string): Address {
   return parseAddress(displayAddress(url));
 }
 
-/** Cache site metadata per content root, even when the browser origin is shared. */
-export function siteRoot(url: string): string | undefined {
-  if (!/^(?:https?|ipfs|ipns|p2p):\/\//i.test(url)) return;
+export function faviconOrigin(url: string): string | undefined {
+  if (!/^https?:\/\//i.test(url)) return;
   try {
-    const address = navigationAddress(url);
-    return address.root
-      ? `p2p://shared/${address.kind}/${address.root}`
-      : new URL(address.internal).origin;
+    return new URL(parseAddress(url).internal).origin;
   } catch {
     return;
   }

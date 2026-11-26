@@ -94,6 +94,7 @@
   "importTimeout": "Przekroczono czas importowania do Kubo",
   "importIncomplete": "Kubo nie potwierdziło ukończenia importu",
   "missingRoot": "Brak końcowego katalogu w odpowiedzi Kubo",
+  "localBookmarkUnavailable": "Plików lokalnych nie można dodawać do zakładek.",
   "missingRepoConfig": "Repozytorium Kubo zawiera dane, ale brakuje pliku config. Przywróć oryginalny plik config z kopii zapasowej i uruchom węzeł ponownie.",
   "invalidRepo": "Nieprawidłowe repozytorium Kubo",
   "startTimeout": "Kubo nie osiągnęło gotowości: {error}",

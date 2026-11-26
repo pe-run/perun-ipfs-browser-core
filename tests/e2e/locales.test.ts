@@ -1,7 +1,7 @@
-import { browserUI } from './browser-ui';
+import { browserUI, launchBrowser } from './browser-ui';
 import { parseAddress } from '../../src/shared/address';
 import { catalog } from '../../src/shared/catalog';
-import { test, expect, _electron as electron } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -13,7 +13,7 @@ import {
 test('uses the system UI language, switches all ten languages, keeps catalog paths and persists the preference', async () => {
   const profile = await mkdtemp(join(tmpdir(), 'perun-languages-'));
   const launch = () =>
-    electron.launch({
+    launchBrowser({
       args: ['.'],
       env: {
         ...process.env,

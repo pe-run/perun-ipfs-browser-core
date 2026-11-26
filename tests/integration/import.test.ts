@@ -29,6 +29,14 @@ it('streams files and directories over RPC, pins, preserves names, and serves im
     ).toEqual(bytes);
     expect((await a.getStats()).pins).toContain(imported.cid);
     expect(await a.isPinned(imported.cid)).toBe(true);
+    const alternate = await a.cli(
+      'cid',
+      'format',
+      '-b',
+      'base36',
+      imported.cid,
+    );
+    expect(await a.isPinned(alternate)).toBe(true);
     const listing = await serveP2P(
       new Request(`p2p://shared/ipfs/${imported.cid}/`),
       a,

@@ -22,6 +22,7 @@ import {
   catalogDescription,
   type CatalogCategory,
 } from '../shared/catalog';
+import { canBookmark } from '../shared/address';
 const api = window.browser;
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
@@ -137,10 +138,12 @@ function updateBookmarkStar() {
   const saved =
     !!active?.url && bookmarks.some((bookmark) => bookmark.url === active.url);
   const star = $<HTMLButtonElement>('bookmark');
-  star.disabled = !active?.url;
+  star.disabled = !canBookmark(active?.url);
   star.textContent = saved ? '★' : '☆';
   star.setAttribute('aria-pressed', String(saved));
-  star.title = t(saved ? 'bookmarkSaved' : 'bookmark');
+  star.title = active?.url.startsWith('file:')
+    ? t('localBookmarkUnavailable')
+    : t(saved ? 'bookmarkSaved' : 'bookmark');
 }
 function bookmarkLink(bookmark: Bookmark, start: boolean) {
   const link = document.createElement('a');
@@ -601,9 +604,12 @@ function renderSite() {
     'site-reset',
     'site-copy',
     'site-copy-source',
-    'site-bookmark',
   ])
     $<HTMLInputElement>(id).disabled = siteBusy || !site;
+  const bookmark = $<HTMLButtonElement>('site-bookmark');
+  bookmark.disabled = siteBusy || !canBookmark(site?.url);
+  bookmark.title =
+    site?.kind === 'file' ? t('localBookmarkUnavailable') : t('bookmark');
   if (site && !siteBusy) {
     $<HTMLSelectElement>('site-zoom').value = String(site.zoom);
     $<HTMLInputElement>('site-muted').checked = site.muted;

@@ -94,6 +94,7 @@
   "importTimeout": "Kubo 导入超时",
   "importIncomplete": "Kubo 未确认导入完成",
   "missingRoot": "Kubo 响应缺少最终文件夹",
+  "localBookmarkUnavailable": "无法将本地文件加入书签。",
   "missingRepoConfig": "Kubo 仓库中已有数据，但缺少 config 文件。请先从备份中恢复原始 config 文件，然后重启节点。",
   "invalidRepo": "无效的 Kubo 仓库",
   "startTimeout": "Kubo 未能就绪：{error}",

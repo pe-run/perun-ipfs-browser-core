@@ -1,6 +1,6 @@
 import web from '../../resources/branding/site-web.svg?url';
 import ipfs from '../../resources/branding/site-ipfs.svg?url';
-import { siteRoot } from '../shared/address';
+import { faviconOrigin } from '../shared/address';
 import type { BrowserAPI } from '../shared/types';
 let sources: Record<string, string[]> = {};
 const requests = new Map<string, Promise<string | undefined>>();
@@ -41,7 +41,7 @@ export function siteIcon(url: string, api: BrowserAPI) {
   image.dataset.kind = kind;
   image.dataset.url = url;
   image.src = { web, ipfs, ipns: ipfs }[kind];
-  const origin = siteRoot(url);
+  const origin = faviconOrigin(url);
   if (!origin) return image;
   const key = origin + JSON.stringify(sources[origin] || []);
   let request = requests.get(key);

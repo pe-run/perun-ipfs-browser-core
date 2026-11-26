@@ -1,3 +1,4 @@
+import { canonicalCID, validCID } from '../../shared/address';
 import { BookmarksFile } from './bookmarks';
 import { dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -18,6 +19,18 @@ export class Store {
         CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS pins(cid TEXT PRIMARY KEY);
       `);
+      if (this.db.prepare('PRAGMA user_version').get()?.user_version === 0) {
+        this.db.function('canonical_pin', (value) =>
+          typeof value === 'string' && validCID(value)
+            ? canonicalCID(value)
+            : value,
+        );
+        this.db.exec(`BEGIN;
+        UPDATE OR IGNORE pins SET cid=canonical_pin(cid) WHERE cid<>canonical_pin(cid);
+        DELETE FROM pins WHERE cid<>canonical_pin(cid);
+        PRAGMA user_version=1;
+        COMMIT;`);
+      }
       this.favorites = new BookmarksFile(
         bookmarksFile ??
           (file === ':memory:'
@@ -97,7 +110,7 @@ export class Store {
           ? 'INSERT OR IGNORE INTO pins VALUES(?)'
           : 'DELETE FROM pins WHERE cid=?',
       )
-      .run(cid);
+      .run(canonicalCID(cid));
   }
   pins() {
     return this.db

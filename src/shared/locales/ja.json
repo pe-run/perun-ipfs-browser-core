@@ -94,6 +94,7 @@
   "importTimeout": "Kubo への追加がタイムアウトしました",
   "importIncomplete": "Kubo がインポートの完了を確認しませんでした",
   "missingRoot": "Kubo の応答に最終フォルダーがありません",
+  "localBookmarkUnavailable": "ローカルファイルはブックマークに追加できません。",
   "missingRepoConfig": "Kubo リポジトリにデータがありますが、config ファイルが見つかりません。バックアップから元の config ファイルを復元して、ノードを再起動してください。",
   "invalidRepo": "無効な Kubo リポジトリ",
   "startTimeout": "Kubo の準備が完了しませんでした：{error}",

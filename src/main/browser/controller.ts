@@ -31,7 +31,11 @@ import {
 } from 'electron';
 import type { Session } from 'electron';
 import { requestRedirect } from '../ipfs/request-address';
-import { navigationAddress, parseAddress } from '../../shared/address';
+import {
+  canBookmark,
+  navigationAddress,
+  parseAddress,
+} from '../../shared/address';
 import type {
   Bookmark,
   BrowserState,
@@ -738,6 +742,8 @@ export class BrowserController {
         const target = this.scopedTab(command);
         if (command.action === 'siteCopy')
           clipboard.writeText(target.state.url);
+        else if (!canBookmark(target.state.url))
+          throw Error(t('localBookmarkUnavailable'));
         else if (
           !this.store
             .bookmarks()
@@ -860,6 +866,8 @@ export class BrowserController {
         if (tab) clipboard.writeText(tab.state.url);
         return;
       case 'bookmark':
+        if (tab?.state.url && !canBookmark(tab.state.url))
+          throw Error(t('localBookmarkUnavailable'));
         if (
           tab?.state.url &&
           !this.store

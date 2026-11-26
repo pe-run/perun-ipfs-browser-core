@@ -1,5 +1,5 @@
-import { browserUI } from './browser-ui';
-import { test, expect, _electron } from '@playwright/test';
+import { browserUI, launchBrowser } from './browser-ui';
+import { test, expect } from '@playwright/test';
 import { once } from 'node:events';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
@@ -38,7 +38,7 @@ test('opens local files and directories through browser chrome and blocks web pa
     throw Error('Missing fixture address');
   const remote = `http://127.0.0.1:${address.port}/`;
   try {
-    const app = await _electron.launch({
+    const app = await launchBrowser({
       args: ['.'],
       env: {
         ...process.env,
@@ -79,6 +79,10 @@ test('opens local files and directories through browser chrome and blocks web pa
       const listing = await open(folder.slice(0, -1), folder);
       await listing.getByText('Perun fixture.html', { exact: true }).click();
       await expect(listing).toHaveURL(local);
+      await expect(ui.locator('#bookmark')).toBeDisabled();
+      await ui.locator('#site-settings').click();
+      await expect(ui.locator('#site-bookmark')).toBeDisabled();
+      await ui.locator('#site-dialog [data-dismiss]').click();
       await expect(listing.getByRole('heading')).toHaveCSS(
         'color',
         'rgb(15, 25, 35)',
@@ -97,6 +101,10 @@ test('opens local files and directories through browser chrome and blocks web pa
       await expect(listing.getByText('Read from disk')).toBeVisible();
       await ui.locator('#back').click();
       await expect(listing).toHaveURL(local);
+      await expect(ui.locator('#bookmark')).toBeDisabled();
+      await ui.locator('#site-settings').click();
+      await expect(ui.locator('#site-bookmark')).toBeDisabled();
+      await ui.locator('#site-dialog [data-dismiss]').click();
       await open(remote);
       const filePage = await open(local);
       await expect(filePage.getByRole('heading')).toHaveText('Local fixture');

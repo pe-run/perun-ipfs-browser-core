@@ -1,3 +1,6 @@
+import { DatabaseSync } from 'node:sqlite';
+import { CID } from 'multiformats/cid';
+import { base36 } from 'multiformats/bases/base36';
 import { it, expect } from 'vitest';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -11,13 +14,19 @@ it('persists history, bookmarks, settings and manual pins across restart', () =>
   const dir = mkdtempSync(join(tmpdir(), 'browser-store-')),
     file = join(dir, 'test.sqlite');
   try {
+    const cid = 'bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze';
+    const alternate = CID.parse(cid).toString(base36);
     let s = new Store(file);
     s.visit('https://example.org/', 'Title');
     s.bookmark('https://example.org/bookmark', 'Test');
     s.bookmark('https://example.org/bookmark', 'Updated');
     s.set('tabs', ['https://example.org/']);
-    s.pin('cid', true);
+    s.pin(cid, true);
     s.close();
+    const legacy = new DatabaseSync(file);
+    legacy.exec('PRAGMA user_version=0');
+    legacy.prepare('INSERT INTO pins VALUES (?)').run(alternate);
+    legacy.close();
     s = new Store(file);
     expect(s.history()).toHaveLength(1);
     expect(s.bookmarks()).toHaveLength(starterBookmarks.length + 1);
@@ -26,8 +35,10 @@ it('persists history, bookmarks, settings and manual pins across restart', () =>
         ?.title,
     ).toBe('Updated');
     expect(s.get('tabs', [])).toEqual(['https://example.org/']);
-    expect(s.pins()).toEqual(['cid']);
-    s.pin('cid', false);
+    expect(s.pins()).toEqual([
+      'bafybeiaysi4s6lnjev27ln5icwm6tueaw2vdykrtjkwiphwekaywqhcjze',
+    ]);
+    s.pin(alternate, false);
     s.removeBookmark('https://example.org/bookmark');
     expect(s.pins()).toEqual([]);
     expect(s.bookmarks()).toHaveLength(starterBookmarks.length);

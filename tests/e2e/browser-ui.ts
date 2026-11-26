@@ -1,4 +1,9 @@
-import { expect, type ElectronApplication, type Page } from '@playwright/test';
+import {
+  _electron,
+  expect,
+  type ElectronApplication,
+  type Page,
+} from '@playwright/test';
 
 /**
  * Return the trusted browser chrome page. `app.firstWindow()` is not reliable:
@@ -15,4 +20,11 @@ export async function browserUI(app: ElectronApplication): Promise<Page> {
   const ui = chrome()!;
   await ui.waitForLoadState();
   return ui;
+}
+
+export function launchBrowser(options: Parameters<typeof _electron.launch>[0]) {
+  return _electron.launch({
+    ...options,
+    chromiumSandbox: true,
+  });
 }

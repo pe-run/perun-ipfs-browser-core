@@ -94,6 +94,7 @@
   "importTimeout": "Время импорта в Kubo истекло",
   "importIncomplete": "Kubo не подтвердил завершение импорта",
   "missingRoot": "В ответе Kubo нет конечной папки",
+  "localBookmarkUnavailable": "Локальные файлы нельзя добавить в закладки.",
   "missingRepoConfig": "В репозитории Kubo есть данные, но отсутствует файл config. Восстановите исходный файл config из резервной копии и перезапустите узел.",
   "invalidRepo": "Недопустимый репозиторий Kubo",
   "startTimeout": "Kubo не перешёл в готовое состояние: {error}",

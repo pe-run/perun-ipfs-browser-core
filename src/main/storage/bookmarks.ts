@@ -12,7 +12,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { dirname } from 'node:path';
-import { parseAddress } from '../../shared/address';
+import { canBookmark, parseAddress } from '../../shared/address';
 import {
   starterBookmarks,
   starterFolders,
@@ -129,7 +129,7 @@ export class BookmarksFile {
         !bookmark ||
         typeof bookmark.url !== 'string' ||
         bookmark.url.length > 8192 ||
-        !/^(https?|ipfs|ipns):\/\//i.test(bookmark.url) ||
+        !canBookmark(bookmark.url) ||
         typeof bookmark.title !== 'string' ||
         bookmark.title.length > 8192 ||
         (bookmark.description !== undefined &&

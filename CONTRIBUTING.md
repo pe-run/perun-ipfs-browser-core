@@ -25,6 +25,8 @@ npm run package
 xvfb-run -a npm run test:e2e
 ```
 
+Electron E2E tests enable the Chromium sandbox. To use local binaries configured with a compatible sandbox helper, set `ELECTRON_OVERRIDE_DIST_PATH` to the development Electron directory and `PERUN_TEST_PACKAGED_EXECUTABLE` to the packaged executable.
+
 Run checks appropriate to the changed behavior. Use local fixtures and report environmental blockers honestly. Never disable the sandbox, CORS or certificate validation to make tests pass. Keep production certificate handling distinct from local test-harness trust.
 
 ## Localization

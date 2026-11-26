@@ -3,7 +3,7 @@ import type { Session } from 'electron';
 import type { Store } from '../storage/store';
 import { safePNG } from './favicon-validation';
 import { requestRedirect } from '../ipfs/request-address';
-import { siteRoot } from '../../shared/address';
+import { faviconOrigin } from '../../shared/address';
 export class Favicons {
   readonly sources: Record<string, string[]> = {};
   private requests = new Map<
@@ -17,7 +17,7 @@ export class Favicons {
     private store: Store,
   ) {}
   observe(page: string, urls: string[]) {
-    const origin = siteRoot(page);
+    const origin = faviconOrigin(page);
     if (!origin) return false;
     const sources = [
       ...new Set(
@@ -31,12 +31,9 @@ export class Favicons {
             return [url];
           try {
             const normalized = requestRedirect(url, page) ?? url;
-            const candidate = siteRoot(normalized);
+            const candidate = faviconOrigin(normalized);
             return candidate &&
-              !(
-                origin.startsWith('https:') && normalized.startsWith('http:')
-              ) &&
-              (!candidate.startsWith('p2p:') || origin.startsWith('p2p:'))
+              !(origin.startsWith('https:') && normalized.startsWith('http:'))
               ? [normalized]
               : [];
           } catch {
@@ -61,7 +58,7 @@ export class Favicons {
     return safePNG(cached.png) ? cached : undefined;
   }
   async get(page: string) {
-    const origin = siteRoot(page);
+    const origin = faviconOrigin(page);
     if (!origin || this.stopped)
       return { images: [], sourceKey: '', cached: false };
     const sourceKey = JSON.stringify(this.sources[origin] || []),
@@ -143,7 +140,7 @@ export class Favicons {
   }
   save(page: string, png: string, sourceKey: string) {
     if (this.stopped) return false;
-    const origin = siteRoot(page);
+    const origin = faviconOrigin(page);
     if (!origin || !safePNG(png)) throw Error('Invalid favicon');
     if (sourceKey !== JSON.stringify(this.sources[origin] || [])) return false;
     const image = nativeImage.createFromDataURL(png);
@@ -152,7 +149,7 @@ export class Favicons {
     return true;
   }
   icon(page: string) {
-    const origin = siteRoot(page);
+    const origin = faviconOrigin(page);
     const png = origin && this.cached(origin)?.png;
     return png ? nativeImage.createFromDataURL(png) : undefined;
   }

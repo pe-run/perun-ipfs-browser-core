@@ -94,6 +94,7 @@
   "importTimeout": "Tempo de importação para Kubo esgotado",
   "importIncomplete": "Kubo não confirmou a conclusão da importação",
   "missingRoot": "Falta a pasta final na resposta do Kubo",
+  "localBookmarkUnavailable": "Arquivos locais não podem ser adicionados aos favoritos.",
   "missingRepoConfig": "O repositório Kubo contém dados, mas o arquivo config está ausente. Restaure o arquivo config original de um backup e reinicie o nó.",
   "invalidRepo": "Repositório Kubo inválido",
   "startTimeout": "Kubo não ficou pronto: {error}",

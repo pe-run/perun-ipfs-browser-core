@@ -7,7 +7,9 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 test('packaged Linux app starts outside source tree, runs bundled Kubo and stops it on quit', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'browser-package-'));
-  const executable = resolve('out/ipfs-browser-linux-x64/ipfs-browser');
+  const executable =
+    process.env.PERUN_TEST_PACKAGED_EXECUTABLE ||
+    resolve('out/ipfs-browser-linux-x64/ipfs-browser');
   await access(executable);
   const child = spawn(
     executable,
@@ -28,7 +30,10 @@ test('packaged Linux app starts outside source tree, runs bundled Kubo and stops
   try {
     await expect
       .poll(() => {
-        if (child.exitCode !== null) throw Error(logs);
+        if (child.exitCode !== null || child.signalCode !== null)
+          throw Error(
+            `Electron exited (${child.signalCode ?? child.exitCode})\n${logs}`,
+          );
         return /DevTools listening on (ws:\/\/[^\s]+)/.exec(logs)?.[1];
       })
       .toBeTruthy();
@@ -92,7 +97,7 @@ test('packaged Linux app starts outside source tree, runs bundled Kubo and stops
       access(join(dir, 'profile', 'ipfs', 'rpc.sock')),
     ).rejects.toThrow();
   } finally {
-    if (child.exitCode === null) {
+    if (child.exitCode === null && child.signalCode === null) {
       child.kill('SIGTERM');
       await new Promise<void>((r) => {
         child.once('exit', () => r());

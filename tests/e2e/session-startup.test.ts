@@ -1,5 +1,5 @@
-import { browserUI } from './browser-ui';
-import { test, expect, _electron } from '@playwright/test';
+import { browserUI, launchBrowser } from './browser-ui';
+import { test, expect } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { once } from 'node:events';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -15,7 +15,7 @@ test('preserves the restored session when a new HTTP tab opens during Kubo start
   const config = join(repo, 'config');
   const server = createServer((_request, res) => res.end('HTTP ready'));
   const db = new DatabaseSync(join(profile, 'browser.sqlite'));
-  let app: Awaited<ReturnType<typeof _electron.launch>> | undefined;
+  let app: Awaited<ReturnType<typeof launchBrowser>> | undefined;
   try {
     const kubo = (args: string[], input?: string) =>
       execFileSync(resolve('resources/kubo/ipfs'), args, {
@@ -42,7 +42,7 @@ test('preserves the restored session when a new HTTP tab opens during Kubo start
     if (!address || typeof address === 'string')
       throw Error('Missing HTTP port');
     const http = `http://127.0.0.1:${address.port}/`;
-    app = await _electron.launch({
+    app = await launchBrowser({
       args: ['.'],
       env: {
         ...process.env,
@@ -96,7 +96,7 @@ test('restores 31 legacy tabs and remembers the second tab on the next launch', 
     (_, i) => pathToFileURL(fixture).href + '#' + i,
   );
   const launch = () =>
-    _electron.launch({
+    launchBrowser({
       args: ['.'],
       env: {
         ...process.env,

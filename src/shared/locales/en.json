@@ -94,6 +94,7 @@
   "importTimeout": "Kubo import timed out",
   "importIncomplete": "Kubo did not confirm a complete import",
   "missingRoot": "Kubo response is missing the final folder",
+  "localBookmarkUnavailable": "Local files cannot be bookmarked.",
   "missingRepoConfig": "The Kubo repository contains data but its config file is missing. Restore the original config from a backup and restart the node.",
   "invalidRepo": "Invalid Kubo repository",
   "startTimeout": "Kubo did not become ready: {error}",
