@@ -94,6 +94,7 @@
   "importTimeout": "Délai d’importation Kubo dépassé",
   "importIncomplete": "Kubo n’a pas confirmé la fin de l’importation",
   "missingRoot": "Dossier final absent de la réponse Kubo",
+  "missingRepoConfig": "Le dépôt Kubo contient des données, mais le fichier config est introuvable. Restaurez le fichier config d’origine depuis une sauvegarde et redémarrez le nœud.",
   "invalidRepo": "Dépôt Kubo invalide",
   "startTimeout": "Kubo n’est pas devenu prêt : {error}",
   "rpcTimeout": "Délai de réponse Kubo dépassé",

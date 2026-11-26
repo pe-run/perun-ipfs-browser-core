@@ -94,6 +94,7 @@
   "importTimeout": "Tiempo de importación a Kubo agotado",
   "importIncomplete": "Kubo no confirmó la importación completa",
   "missingRoot": "Falta la carpeta final en la respuesta de Kubo",
+  "missingRepoConfig": "El repositorio de Kubo contiene datos, pero falta el archivo config. Restaura el archivo config original desde una copia de seguridad y reinicia el nodo.",
   "invalidRepo": "Repositorio Kubo no válido",
   "startTimeout": "Kubo no se inició correctamente: {error}",
   "rpcTimeout": "Tiempo de respuesta de Kubo agotado",

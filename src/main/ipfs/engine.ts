@@ -1,10 +1,27 @@
-import { assertRepositoryInactive, privateSocket, kuboFailure } from './socket';
+import {
+  assertRepositoryInactive,
+  lockRepository,
+  privateSocket,
+  kuboFailure,
+} from './socket';
 import { t } from '../../shared/i18n';
 import { importToKubo, type ImportMode, type ImportResult } from './import';
 import { spawn, execFile } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
 import { promisify } from 'node:util';
-import { mkdir, readFile, open, chmod, rename } from 'node:fs/promises';
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  link,
+  rmdir,
+  unlink,
+  open,
+  chmod,
+  rename,
+  rm,
+} from 'node:fs/promises';
 import { join } from 'node:path';
 import { request } from 'node:http';
 import { Readable } from 'node:stream';
@@ -86,28 +103,43 @@ export class KuboEngine implements IPFSEngine {
       })
     ).stdout.trim();
   }
-  async start() {
-    if (this.child || this.starting) throw Error('Kubo already started');
-    this.starting = true;
-    this.logs = '';
-    this.ipnsCache.clear();
-    this.socketPath = privateSocket(this.repo);
-    this.state = 'starting';
-    this.detail = '';
-    this.stopping = false;
+  // Kubo's init opens its own repo.lock. Prepare the initial files separately
+  // while holding the real repository lock, including on mounted volumes.
+  private async initializeEmptyRepository() {
+    if ((await readdir(this.repo)).some((entry) => entry !== 'repo.lock'))
+      throw Error(t('missingRepoConfig'));
+    const staging = await mkdtemp(join(this.repo, '.perun-init-'));
     try {
-      await mkdir(this.repo, { recursive: true, mode: 0o700 });
-      await chmod(this.repo, 0o700);
-      let text: string;
-      let initialized = false;
-      try {
-        text = await readFile(join(this.repo, 'config'), 'utf8');
-      } catch (e) {
-        if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
-        await this.cli('init', '--profile=lowpower');
-        initialized = true;
-        text = await readFile(join(this.repo, 'config'), 'utf8');
-      }
+      await exec(this.binary, ['init', '--profile=lowpower'], {
+        env: { ...this.env(), IPFS_PATH: staging },
+        timeout: 60000,
+      });
+    } catch (error) {
+      await rm(staging, { recursive: true, force: true });
+      throw error;
+    }
+    // Publish config last. If installation is interrupted, the original key
+    // survives in staging; a retry will recognize the incomplete repository.
+    for (const name of await readdir(staging)) {
+      if (name === 'repo.lock') await unlink(join(staging, name));
+      else if (name !== 'config')
+        await rename(join(staging, name), join(this.repo, name));
+    }
+    await link(join(staging, 'config'), join(this.repo, 'config'));
+    await unlink(join(staging, 'config'));
+    await rmdir(staging);
+  }
+  private async prepareRepository() {
+    await mkdir(this.repo, { recursive: true, mode: 0o700 });
+    const configPath = join(this.repo, 'config');
+    const entries = await readdir(this.repo);
+    const initialize = entries.length === 0;
+    if (!initialize && !entries.includes('config'))
+      throw Error(t('missingRepoConfig'));
+    const lock = await lockRepository(this.repo);
+    try {
+      if (initialize) await this.initializeEmptyRepository();
+      const text = await readFile(configPath, 'utf8');
       const parsed: unknown = JSON.parse(text);
       if (!isRecord(parsed) || !isRecord(parsed.Identity))
         throw Error(t('invalidRepo'));
@@ -121,12 +153,13 @@ export class KuboEngine implements IPFSEngine {
       };
       await assertRepositoryInactive(this.repo, config.Addresses.API);
       if (!config.Identity.PeerID) throw Error(t('invalidRepo'));
+      await chmod(this.repo, 0o700);
       // Security-relevant: always a private socket and no HTTP gateway.
       config.Addresses.API = `/unix${this.socket}`;
       config.Addresses.Gateway = '';
       // Dynamic ports avoid collisions, but only as a default: swarm addresses
       // that the user changed in an existing repository are kept.
-      if (initialized || config.Addresses.Swarm === undefined)
+      if (initialize || config.Addresses.Swarm === undefined)
         config.Addresses.Swarm = [
           '/ip4/0.0.0.0/tcp/0',
           '/ip4/0.0.0.0/udp/0/quic-v1',
@@ -136,14 +169,37 @@ export class KuboEngine implements IPFSEngine {
       config.Datastore.StorageMax ??= '10GB';
       config.Datastore.StorageGCWatermark ??= 90;
       config.Datastore.GCPeriod ??= '1h';
-      const next = await open(join(this.repo, 'config.next'), 'w', 0o600);
+      const temporary = this.socket + '.config';
+      const next = await open(temporary, 'wx', 0o600);
       try {
-        await next.writeFile(JSON.stringify(config, null, 2));
-        await next.sync();
+        try {
+          await next.writeFile(JSON.stringify(config, null, 2));
+          await next.sync();
+        } finally {
+          await next.close();
+        }
+        await rename(temporary, configPath);
       } finally {
-        await next.close();
+        await rm(temporary, { force: true });
       }
-      await rename(join(this.repo, 'config.next'), join(this.repo, 'config'));
+    } catch (error) {
+      if (initialize) await unlink(join(this.repo, 'repo.lock'));
+      throw error;
+    } finally {
+      await lock.close();
+    }
+  }
+  async start() {
+    if (this.child || this.starting) throw Error('Kubo already started');
+    this.starting = true;
+    this.logs = '';
+    this.ipnsCache.clear();
+    this.socketPath = privateSocket(this.repo);
+    this.state = 'starting';
+    this.detail = '';
+    this.stopping = false;
+    try {
+      await this.prepareRepository();
       if (this.stopping) throw Error('Kubo startup cancelled');
       this.child = spawn(
         this.binary,

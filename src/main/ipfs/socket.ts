@@ -1,6 +1,8 @@
 import { randomBytes } from 'node:crypto';
 import { createConnection } from 'node:net';
-import { readFile } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { open, readFile, stat } from 'node:fs/promises';
+import { tryLock } from 'fs-native-extensions';
 import { join } from 'node:path';
 export function privateSocket(repo: string) {
   const path = join(repo, `rpc-${randomBytes(6).toString('hex')}.sock`);
@@ -27,6 +29,36 @@ async function listening(path: string): Promise<boolean> {
     );
   });
 }
+const repositoryBusy =
+  'The IPFS repository is already used by a running node. Close the other Perun/Kubo instance before starting this profile.';
+
+/** Hold a write lock compatible with Kubo's POSIX lock for the entire config update. */
+export async function lockRepository(repo: string) {
+  const path = join(repo, 'repo.lock');
+  const file = await open(
+    path,
+    constants.O_RDWR |
+      constants.O_CREAT |
+      constants.O_NOFOLLOW |
+      constants.O_NONBLOCK,
+    0o600,
+  );
+  try {
+    const info = await file.stat({ bigint: true });
+    if (!info.isFile() || info.size !== 0n)
+      throw Error('Invalid Kubo repository lock file');
+    if (!tryLock(file.fd)) throw Error(repositoryBusy);
+    // Kubo unlinks the lock file before releasing it on shutdown. A lock on
+    // the old inode would give no protection to the configuration writer.
+    const current = await stat(path, { bigint: true });
+    if (current.dev !== info.dev || current.ino !== info.ino)
+      throw Error(repositoryBusy);
+    return file;
+  } catch (error) {
+    await file.close();
+    throw error;
+  }
+}
 export async function assertRepositoryInactive(
   repo: string,
   configuredAPI?: unknown,
@@ -41,10 +73,7 @@ export async function assertRepositoryInactive(
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
   }
   for (const path of addresses)
-    if (await listening(path))
-      throw Error(
-        'The IPFS repository is already used by a running node. Close the other Perun/Kubo instance before starting this profile.',
-      );
+    if (await listening(path)) throw Error(repositoryBusy);
 }
 export function kuboFailure(logs: string) {
   const errors = logs

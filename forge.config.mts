@@ -16,7 +16,19 @@ const rpmSpec = {
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true,
+    asar: { unpack: '*.node' },
+    // Vite bundles application code. Electron Packager prunes development
+    // dependencies and keeps the native repo lock and its runtime loader.
+    ignore: (path) => {
+      if (path.startsWith('/node_modules/fs-native-extensions/prebuilds/'))
+        return (
+          !path.endsWith('/linux-x64') &&
+          !path.endsWith('/linux-x64/fs-native-extensions.node')
+        );
+      return (
+        !!path && !/^\/(?:\.vite(?:\/|$)|node_modules(?:$|\/[^.]))/.test(path)
+      );
+    },
     name: 'ipfs-browser',
     executableName: 'ipfs-browser',
     extraResource: [

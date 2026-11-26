@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { mkdtemp, writeFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, readdir, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { KuboEngine } from '../../src/main/ipfs/engine';
@@ -77,6 +77,7 @@ it('reports missing Kubo without hanging', async () => {
   try {
     await expect(a.start()).rejects.toThrow();
     expect(a.state).toBe('failed');
+    expect(await readdir(dir)).toEqual([]);
   } finally {
     await a.stop();
     await rm(dir, { recursive: true, force: true });

@@ -94,6 +94,7 @@
   "importTimeout": "Zeitüberschreitung beim Kubo-Import",
   "importIncomplete": "Kubo hat den vollständigen Import nicht bestätigt",
   "missingRoot": "Endgültiger Ordner fehlt in der Kubo-Antwort",
+  "missingRepoConfig": "Das Kubo-Repository enthält Daten, aber die Datei config fehlt. Stelle die ursprüngliche Datei config aus einer Sicherung wieder her und starte den Knoten neu.",
   "invalidRepo": "Ungültiges Kubo-Repository",
   "startTimeout": "Kubo wurde nicht bereit: {error}",
   "rpcTimeout": "Zeitüberschreitung der Kubo-Antwort",

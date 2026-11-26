@@ -1,8 +1,12 @@
 import { it, expect } from 'vitest';
 import { createServer } from 'node:net';
+import { spawn } from 'node:child_process';
+import { once } from 'node:events';
 import {
   mkdtemp,
   readFile,
+  readdir,
+  rename,
   writeFile,
   rm,
   lstat,
@@ -12,6 +16,72 @@ import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { KuboEngine } from '../../src/main/ipfs/engine';
 const binary = resolve('resources/kubo/ipfs');
+it('requires the original config when a populated repository loses it', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'kubo-identity-'));
+  const repo = join(dir, 'repo'),
+    config = join(repo, 'config');
+  const engine = new KuboEngine(binary, repo, true, false);
+  try {
+    await engine.start();
+    const { ID } = await engine.json('id');
+    const file = join(dir, 'keep.txt');
+    await writeFile(file, 'Keep this content');
+    const cid = await engine.cli('add', '-Q', file);
+    await engine.stop();
+    await rename(config, join(dir, 'backup'));
+    const files = (await readdir(repo)).sort();
+    await expect(engine.start()).rejects.toThrow(/restore.*config/i);
+    expect((await readdir(repo)).sort()).toEqual(files);
+    await rename(join(dir, 'backup'), config);
+    await engine.restart();
+    expect((await engine.json('id')).ID).toBe(ID);
+    expect(await new Response(await engine.get(cid)).text()).toBe(
+      'Keep this content',
+    );
+  } finally {
+    await engine.stop();
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+it('preserves the configuration and API of a Kubo owner listening on TCP', async () => {
+  const repo = await mkdtemp(join(tmpdir(), 'kubo-tcp-'));
+  const engine = new KuboEngine(binary, repo, true, false);
+  try {
+    await engine.cli('init', '--profile=lowpower');
+    await engine.cli('config', 'Addresses.API', '/ip4/127.0.0.1/tcp/0');
+    await engine.cli('config', 'Addresses.Gateway', '');
+    const owner = spawn(binary, ['daemon', '--offline'], {
+      env: { ...process.env, IPFS_PATH: repo },
+      stdio: 'ignore',
+    });
+    const exited = once(owner, 'exit');
+    try {
+      const marker = join(repo, 'api');
+      await expect
+        .poll(() => readFile(marker, 'utf8').catch(() => ''))
+        .toMatch(/^\/ip4\/127\.0\.0\.1\/tcp\/\d+/);
+      const address = await readFile(marker, 'utf8');
+      const endpoint =
+        'http://127.0.0.1:' + address.trim().split('/')[4] + '/api/v0/id';
+      const peerID = async () =>
+        (await (await fetch(endpoint, { method: 'POST' })).json()).ID;
+      const id = await peerID();
+      const config = await readFile(join(repo, 'config'));
+      await expect(engine.start()).rejects.toThrow('already used');
+      // Compare the bytes without exposing the private key in assertion output.
+      expect((await readFile(join(repo, 'config'))).equals(config)).toBe(true);
+      expect(await readFile(marker, 'utf8')).toBe(address);
+      expect(await peerID()).toBe(id);
+    } finally {
+      owner.kill('SIGTERM');
+      await exited;
+    }
+  } finally {
+    await engine.stop();
+    await rm(repo, { recursive: true, force: true });
+  }
+});
 it('starts safely with a stale legacy socket and restarts after an actual SIGKILL, preserving PeerID', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'kubo-recovery-')),
     repo = join(dir, 'repo');

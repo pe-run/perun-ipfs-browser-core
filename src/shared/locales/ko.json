@@ -94,6 +94,7 @@
   "importTimeout": "Kubo 가져오기 시간이 초과되었습니다",
   "importIncomplete": "Kubo가 가져오기 완료를 확인하지 않았습니다",
   "missingRoot": "Kubo 응답에 최종 폴더가 없습니다",
+  "missingRepoConfig": "Kubo 저장소에 데이터가 있지만 config 파일이 없습니다. 백업에서 원래 config 파일을 복원한 뒤 노드를 다시 시작하세요.",
   "invalidRepo": "잘못된 Kubo 저장소",
   "startTimeout": "Kubo가 준비 상태가 되지 못했습니다: {error}",
   "rpcTimeout": "Kubo 응답 시간이 초과되었습니다",
