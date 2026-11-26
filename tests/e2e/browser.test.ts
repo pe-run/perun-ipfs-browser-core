@@ -1191,11 +1191,10 @@ test('stores favorites in JSON and recreates defaults after the file is deleted'
   await app.close();
   await rm(file);
   await start();
-  await expect(ui.locator('#bookmarks-bar a')).toHaveCount(3);
+  await expect(ui.locator('#bookmarks-bar a')).toHaveCount(2);
   await expect(
     ui.locator('#bookmarks-bar').locator('a, button[data-folder-id]'),
   ).toHaveText([
-    'Perun Catalog',
     'DuckDuckGo',
     'Mojeek',
     ...starterFolders.slice(0, 2).map((folder) => '📁 ' + folder.title),

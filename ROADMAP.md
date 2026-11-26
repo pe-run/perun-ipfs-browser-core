@@ -234,3 +234,10 @@ The standalone forum and its site API were removed from the browser source tree.
 - IPC commands are validated by one schema (`security/commands.ts`) with per-action fields.
 
 0.18.1 validation: typecheck/lint, 81 unit tests, 12 real-Kubo integration tests and 25 Playwright scenarios pass on Node 24. Linux DEB and ZIP were built and the DEB was checked for the project desktop entry (`StartupWMClass=ipfs-browser`), the Perun icon, the SUID sandbox helper and bundled Kubo; RPM and AppImage were built afterwards with rpmbuild 6.0.1 and a current appimagetool continuous build, whose new AppDir permission check required making the copied packager output world-readable (`a+rX`). The RPM carries the same desktop entry, icon, SUID helper and Kubo. The AppImage contents were verified; launching it on this Ubuntu host stops with Chromium's "No usable sandbox" because AppArmor restricts unprivileged user namespaces, as with 0.17.12 and as documented in README. The DEB packaged-app smoke test was not run here.
+
+## 0.18.2
+
+- Protect existing Kubo repository identities and lock configuration updates across Unix and TCP nodes.
+- Use local catalog icons for IPFS and IPNS, recognize alternate CID encodings for pins, and disable bookmarking for local files.
+- Run Electron end-to-end tests with the Chromium sandbox enabled.
+- Remove Perun Catalog from the default bookmarks and add Uniswap, Hyperliquid, Sushi and CoinGecko to Finance.

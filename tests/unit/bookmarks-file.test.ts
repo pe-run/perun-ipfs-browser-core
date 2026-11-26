@@ -35,7 +35,22 @@ it('writes real JSON, persists empty lists and restores defaults only after file
         .bookmarks()
         .filter((bookmark) => bookmark.folderId === null)
         .map((bookmark) => bookmark.title),
-    ).toEqual(['Perun Catalog', 'DuckDuckGo', 'Mojeek']);
+    ).toEqual(['DuckDuckGo', 'Mojeek']);
+    const finance = store
+      .folders()
+      .find((folder) => folder.title === 'Finance')!;
+    expect(
+      store
+        .bookmarks()
+        .filter((b) => b.folderId === finance.id)
+        .map((b) => b.url),
+    ).toEqual([
+      'https://coinmarketcap.com/',
+      'https://app.uniswap.org/',
+      'https://app.hyperliquid.xyz/',
+      'https://www.sushi.com/ethereum/swap',
+      'https://www.coingecko.com/',
+    ]);
     expect(document.bookmarks).toHaveLength(starterBookmarks.length);
     expect(statSync(file).mode & 0o777).toBe(0o600);
     for (const bookmark of store.bookmarks())

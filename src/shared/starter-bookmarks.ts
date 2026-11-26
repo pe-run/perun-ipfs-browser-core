@@ -55,11 +55,6 @@ export const starterFolders: BookmarkFolder[] = [
 
 export const starterBookmarks: Bookmark[] = [
   {
-    url: 'ipns://k51qzi5uqu5dm5zgn28noh9mj76dmfoa6ikax3sm40byq0cr4yybdp0xw0ko9r/',
-    title: 'Perun Catalog',
-    folderId: null,
-  },
-  {
     url: 'https://duckduckgo.com/',
     title: 'DuckDuckGo',
     folderId: null,
@@ -202,6 +197,26 @@ export const starterBookmarks: Bookmark[] = [
   {
     url: 'https://coinmarketcap.com/',
     title: 'CoinMarketCap',
+    folderId: 10,
+  },
+  {
+    url: 'https://app.uniswap.org/',
+    title: 'Uniswap',
+    folderId: 10,
+  },
+  {
+    url: 'https://app.hyperliquid.xyz/',
+    title: 'Hyperliquid',
+    folderId: 10,
+  },
+  {
+    url: 'https://www.sushi.com/ethereum/swap',
+    title: 'Sushi',
+    folderId: 10,
+  },
+  {
+    url: 'https://www.coingecko.com/',
+    title: 'CoinGecko',
     folderId: 10,
   },
   {
